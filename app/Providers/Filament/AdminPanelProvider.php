@@ -27,6 +27,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration(\App\Filament\Pages\Auth\Register::class)
+            ->passwordReset()
+            ->profile()
+            ->brandName(fn () => \App\Models\ShopSetting::getSettings()->shop_name)
+            ->brandLogo(fn () => \App\Models\ShopSetting::getSettings()->getLogoUrl())
+            ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Amber,
             ])

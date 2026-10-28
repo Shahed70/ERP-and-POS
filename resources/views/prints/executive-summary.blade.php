@@ -1,3 +1,6 @@
+@php
+    $settings = \App\Models\ShopSetting::getSettings();
+@endphp
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -210,9 +213,12 @@
     <div class="report-card">
         <div class="header-section">
             <div class="shop-info">
-                <h1>বিসমিল্লাহ ফিশ ফিড স্টোর</h1>
-                <div class="sub-title">Monthly Financial Statement & Performance Review</div>
-                <div style="font-size: 11px; color: #475569; margin-top: 2px;">ত্রিশাল, ময়মনসিংহ | ফোন: ০১৭১১-০০০০০০</div>
+                @if($settings->getLogoUrl())
+                    <img src="{{ $settings->getLogoUrl() }}" style="max-height: 52px; max-width: 160px; object-fit: contain; margin-bottom: 6px;" alt="Logo"><br>
+                @endif
+                <h1>{{ $settings->shop_name }}</h1>
+                <div class="sub-title">{{ $settings->shop_tagline }}</div>
+                <div style="font-size: 11px; color: #475569; margin-top: 2px;">{{ $settings->address }} | ফোন: {{ $settings->phone }}</div>
             </div>
             <div class="badge-box">
                 <div class="title">PROFIT & LOSS STATEMENT</div>

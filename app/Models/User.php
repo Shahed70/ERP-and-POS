@@ -29,6 +29,22 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Determine if user has administrator privileges.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('Admin');
+    }
+
+    /**
+     * Determine if user has viewer / read-only access.
+     */
+    public function isViewer(): bool
+    {
+        return ! $this->isAdmin();
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

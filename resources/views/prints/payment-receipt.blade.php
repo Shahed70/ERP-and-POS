@@ -1,3 +1,6 @@
+@php
+    $settings = \App\Models\ShopSetting::getSettings();
+@endphp
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -272,11 +275,13 @@
         <!-- Header -->
         <div class="header-section">
             <div class="shop-info">
-                <h1>বিসমিল্লাহ ফিশ ফিড স্টোর</h1>
-                <div class="sub-title">Fish Feed Retail & Wholesale ERP</div>
+                @if($settings->getLogoUrl())
+                    <img src="{{ $settings->getLogoUrl() }}" style="max-height: 50px; max-width: 150px; object-fit: contain; margin-bottom: 6px;" alt="Logo"><br>
+                @endif
+                <h1>{{ $settings->shop_name }}</h1>
+                <div class="sub-title">{{ $settings->shop_tagline }}</div>
                 <div class="address">
-                    মেগা, সিপি, কোয়ালিটি ও আফতাব ফিশ ফিডের অনুমোদিত ডিলার<br>
-                    স্থান: প্রধান বাজার, ত্রিশাল, ময়মনসিংহ | মোবাইল: ০১৭১১-০০০০০০
+                    {{ $settings->address }} | মোবাইল: {{ $settings->phone }}
                 </div>
             </div>
             <div class="receipt-badge-box">
@@ -380,7 +385,7 @@
 
         <!-- Terms -->
         <div class="terms-bar">
-            ধন্যবাদ। বকেয়া টাকা পরিশোধের অফিসিয়াল অর্থ আদায় রসিদ। Software Powered by Fish Feed ERP
+            {{ $settings->invoice_footer_note }}
         </div>
     </div>
 
