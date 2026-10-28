@@ -446,4 +446,51 @@ class SaleTest extends TestCase
         $this->actingAs($admin)->get('/admin/payment-collections')->assertSuccessful();
         $this->actingAs($admin)->get('/admin/payment-collections/create')->assertSuccessful();
     }
+
+    public function test_printable_sales_invoice_and_money_receipt_views_render_successfully(): void
+    {
+        $admin = User::where('email', 'admin@fishfeed.com')->first();
+        $customer = $this->createCustomer('Print Test Farmer', 50000.00);
+        $product = $this->createProduct('Print Feed', 25.00, 2400.00, 100.00);
+
+        $sale = SaleService::createSale(
+            saleData: [
+                'customer_id' => $customer->id,
+                'paid_amount' => 1000.00,
+                'payment_method' => 'cash',
+            ],
+            itemsData: [
+                [
+                    'product_id' => $product->id,
+                    'unit_type' => 'bag',
+                    'quantity' => 1,
+                    'pack_size' => 25.00,
+                    'unit_price' => 2400.00,
+                ],
+            ],
+            userId: $admin->id
+        );
+
+        // Test Printable Invoice
+        $invoiceResponse = $this->actingAs($admin)->get(route('sales.print', ['sale' => $sale->id]));
+        $invoiceResponse->assertSuccessful();
+        $invoiceResponse->assertSee($sale->invoice_no);
+        $invoiceResponse->assertSee($customer->name);
+        $invoiceResponse->assertSee('SALES INVOICE');
+
+        // Test Printable Money Receipt
+        $collection = SaleService::collectPayment(
+            customer: $customer,
+            amountPaid: 1000.00,
+            paymentMethod: 'bkash',
+            reference: 'BK-TRX-12345',
+            userId: $admin->id
+        );
+
+        $receiptResponse = $this->actingAs($admin)->get(route('payment-collections.print', ['collection' => $collection->id]));
+        $receiptResponse->assertSuccessful();
+        $receiptResponse->assertSee($collection->receipt_no);
+        $receiptResponse->assertSee('MONEY RECEIPT');
+        $receiptResponse->assertSee('BK-TRX-12345');
+    }
 }

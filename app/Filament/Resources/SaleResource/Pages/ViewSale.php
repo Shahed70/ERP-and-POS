@@ -15,6 +15,12 @@ class ViewSale extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('print')
+                ->label(__('Print Invoice (চালান প্রিন্ট)'))
+                ->icon('heroicon-o-printer')
+                ->color('info')
+                ->url(fn (): string => route('sales.print', ['sale' => $this->getRecord(), 'autoprint' => 1]))
+                ->openUrlInNewTab(),
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalHeading(__('Void / Delete Sales Invoice'))

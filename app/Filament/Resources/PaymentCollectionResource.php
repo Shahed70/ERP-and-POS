@@ -150,6 +150,12 @@ class PaymentCollectionResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('print')
+                    ->label(__('Print (প্রিন্ট)'))
+                    ->icon('heroicon-o-printer')
+                    ->color('info')
+                    ->url(fn (PaymentCollection $record): string => route('payment-collections.print', ['collection' => $record, 'autoprint' => 1]))
+                    ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
             ])
             ->defaultSort('payment_date', 'desc');

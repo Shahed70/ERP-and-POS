@@ -429,6 +429,12 @@ class SaleResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\Action::make('print')
+                    ->label(__('Print (প্রিন্ট)'))
+                    ->icon('heroicon-o-printer')
+                    ->color('info')
+                    ->url(fn (Sale $record): string => route('sales.print', ['sale' => $record, 'autoprint' => 1]))
+                    ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->requiresConfirmation()
