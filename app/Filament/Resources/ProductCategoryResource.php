@@ -115,8 +115,11 @@ class ProductCategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading(__('Delete Product Category'))
+                    ->modalDescription(__('Are you sure you want to delete this category?'))
                     ->before(function (Tables\Actions\DeleteAction $action, ProductCategory $record) {
-                        if ($record->products()->exists()) {
+                        if ($record->hasLinkedProducts()) {
                             Notification::make()
                                 ->danger()
                                 ->title(__('Cannot Delete Category'))
@@ -125,11 +128,25 @@ class ProductCategoryResource extends Resource
 
                             $action->cancel();
                         }
-                    }),
+                    })
+                    ->successNotificationTitle(__('Category deleted successfully')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->before(function (Tables\Actions\DeleteBulkAction $action, \Illuminate\Database\Eloquent\Collection $records) {
+                            $hasLinked = $records->contains(fn (ProductCategory $cat) => $cat->hasLinkedProducts());
+                            if ($hasLinked) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title(__('Cannot Delete Category'))
+                                    ->body(__('One or more selected categories contain linked products and cannot be deleted.'))
+                                    ->send();
+
+                                $action->cancel();
+                            }
+                        }),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

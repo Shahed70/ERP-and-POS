@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ProductCategory extends Model
@@ -31,6 +32,18 @@ class ProductCategory extends Model
     }
 
     /**
+     * Safely check if the category has linked products in database.
+     */
+    public function hasLinkedProducts(): bool
+    {
+        if (! Schema::hasTable('products')) {
+            return false;
+        }
+
+        return $this->products()->exists();
+    }
+
+    /**
      * Boot model events.
      */
     protected static function booted(): void
@@ -42,7 +55,7 @@ class ProductCategory extends Model
         });
 
         static::deleting(function (ProductCategory $category) {
-            if (class_exists(Product::class) && $category->products()->exists()) {
+            if ($category->hasLinkedProducts()) {
                 throw new \Exception(__('Cannot delete category because it contains active products.'));
             }
         });
