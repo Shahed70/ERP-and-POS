@@ -32,4 +32,19 @@ class PrintController extends Controller
             'collection' => $collection,
         ]);
     }
+
+    /**
+     * Display a clean, printer-ready Monthly Executive P&L Summary Report.
+     */
+    public function printExecutiveSummary(Request $request): View
+    {
+        $from = $request->query('from', now()->startOfMonth()->toDateString());
+        $to = $request->query('to', now()->toDateString());
+
+        $data = \App\Services\ReportService::getExecutiveSummary($from, $to);
+
+        return view('prints.executive-summary', [
+            'data' => $data,
+        ]);
+    }
 }
