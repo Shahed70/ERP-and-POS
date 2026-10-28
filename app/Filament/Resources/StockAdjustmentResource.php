@@ -99,6 +99,41 @@ class StockAdjustmentResource extends Resource
                             ->required()
                             ->minValue(0.01)
                             ->live(onBlur: true)
+                            ->rules([
+                                fn (Forms\Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                    $type = $get('type');
+                                    if (in_array($type, ['surplus_found', 'opening_stock'], true)) {
+                                        return;
+                                    }
+                                    $productId = $get('product_id');
+                                    if (! $productId || ! $value) {
+                                        return;
+                                    }
+                                    $product = Product::find($productId);
+                                    if (! $product) {
+                                        return;
+                                    }
+                                    $packSize = (float) ($product->pack_size ?: 25.00);
+                                    $unit = $get('unit_type');
+                                    $requestedKg = $unit === 'bag' ? ((float) $value * $packSize) : (float) $value;
+                                    $locationId = $get('location_id') ?? (Location::getDefault()?->id ?? 1);
+                                    $stockBalance = \App\Models\StockBalance::where('location_id', $locationId)
+                                        ->where('product_id', $productId)
+                                        ->first();
+                                    $availableKg = (float) ($stockBalance?->total_weight_kg ?? 0);
+
+                                    if ($requestedKg > $availableKg) {
+                                        $availableBags = (int) floor($availableKg / $packSize);
+                                        $availableLoose = round(fmod($availableKg, $packSize), 2);
+                                        $fail(__("Insufficient stock! Available: :bags Bags + :loose KG (:totalKg KG). Cannot deduct :requestedKg KG.", [
+                                            'bags' => $availableBags,
+                                            'loose' => $availableLoose,
+                                            'totalKg' => number_format($availableKg, 2),
+                                            'requestedKg' => number_format($requestedKg, 2),
+                                        ]));
+                                    }
+                                },
+                            ])
                             ->helperText(function (Forms\Get $get): ?string {
                                 $productId = $get('product_id');
                                 $qty = (float) $get('input_quantity');

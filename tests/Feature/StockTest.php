@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\StockAdjustmentResource\Pages\CreateStockAdjustment;
 use App\Models\Location;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -11,6 +12,7 @@ use App\Models\User;
 use App\Services\StockService;
 use Exception;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class StockTest extends TestCase
@@ -84,6 +86,26 @@ class StockTest extends TestCase
             quantityKgChange: -30.00,
             transactionType: 'damage_wastage',
         );
+    }
+
+    public function test_stock_adjustment_creation_fails_validation_when_insufficient_stock(): void
+    {
+        $admin = User::where('email', 'admin@fishfeed.com')->first();
+        $product = $this->createProduct();
+
+        // Current stock is 0 KG, attempting to deduct 10 Bags must fail with friendly form error
+        Livewire::actingAs($admin)
+            ->test(CreateStockAdjustment::class)
+            ->fillForm([
+                'location_id' => Location::getDefault()?->id ?? 1,
+                'product_id' => $product->id,
+                'type' => 'damage',
+                'unit_type' => 'bag',
+                'input_quantity' => 10,
+                'reason' => 'Testing excess deduction',
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['input_quantity']);
     }
 
     public function test_stock_filament_resources_are_accessible_by_admin(): void

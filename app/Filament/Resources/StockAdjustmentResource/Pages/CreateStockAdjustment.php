@@ -9,6 +9,8 @@ use App\Services\StockService;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CreateStockAdjustment extends CreateRecord
 {
@@ -33,31 +35,46 @@ class CreateStockAdjustment extends CreateRecord
         $data['quantity_kg'] = $kgChange;
         $data['authorized_by'] = auth()->id() ?? 1;
 
-        // Perform stock balance mutation and ledger recording via StockService
-        $adjustment = StockAdjustment::create($data);
+        try {
+            return DB::transaction(function () use ($data, $product, $signedKg, $isIncrease, $inputQty, $kgChange) {
+                // Mutate stock balance and ledger via StockService
+                $adjustment = StockAdjustment::create($data);
 
-        StockService::recordMovement(
-            productId: $product->id,
-            quantityKgChange: $signedKg,
-            transactionType: $isIncrease ? ($data['type'] === 'opening_stock' ? 'opening_stock' : 'manual_adjustment_surplus') : 'damage_wastage',
-            referenceNo: $adjustment->adjustment_number,
-            referenceId: $adjustment->id,
-            notes: $data['reason'],
-            locationId: $data['location_id'],
-            performedBy: auth()->id() ?? 1,
-        );
+                StockService::recordMovement(
+                    productId: $product->id,
+                    quantityKgChange: $signedKg,
+                    transactionType: $isIncrease ? ($data['type'] === 'opening_stock' ? 'opening_stock' : 'manual_adjustment_surplus') : 'damage_wastage',
+                    referenceNo: $adjustment->adjustment_number,
+                    referenceId: $adjustment->id,
+                    notes: $data['reason'],
+                    locationId: $data['location_id'],
+                    performedBy: auth()->id() ?? 1,
+                );
 
-        Notification::make()
-            ->success()
-            ->title(__('Stock Adjusted Successfully'))
-            ->body(__(":mode of :qty (:kg KG) recorded for :product", [
-                'mode' => $isIncrease ? 'Increase (+)' : 'Decrease (-)',
-                'qty' => "{$inputQty} " . strtoupper($data['unit_type']),
-                'kg' => number_format($kgChange, 2),
-                'product' => $product->name,
-            ]))
-            ->send();
+                Notification::make()
+                    ->success()
+                    ->title(__('Stock Adjusted Successfully'))
+                    ->body(__(":mode of :qty (:kg KG) recorded for :product", [
+                        'mode' => $isIncrease ? 'Increase (+)' : 'Decrease (-)',
+                        'qty' => "{$inputQty} " . strtoupper($data['unit_type']),
+                        'kg' => number_format($kgChange, 2),
+                        'product' => $product->name,
+                    ]))
+                    ->send();
 
-        return $adjustment;
+                return $adjustment;
+            });
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title(__('Adjustment Failed: Insufficient Stock'))
+                ->body($e->getMessage())
+                ->persistent()
+                ->send();
+
+            throw ValidationException::withMessages([
+                'input_quantity' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -164,13 +164,36 @@ class StockBalanceResource extends Resource
                             ->label(__('Quantity (পরিমাণ)'))
                             ->numeric()
                             ->required()
-                            ->minValue(0.01),
+                            ->minValue(0.01)
+                            ->rules([
+                                fn (Forms\Get $get, StockBalance $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                    $type = $get('type');
+                                    if ($type === 'surplus_found') {
+                                        return;
+                                    }
+                                    $packSize = (float) ($record->product->pack_size ?: 25.00);
+                                    $unit = $get('unit_type');
+                                    $requestedKg = $unit === 'bag' ? ((float) $value * $packSize) : (float) $value;
+                                    $availableKg = (float) $record->total_weight_kg;
+
+                                    if ($requestedKg > $availableKg) {
+                                        $availableBags = (int) floor($availableKg / $packSize);
+                                        $availableLoose = round(fmod($availableKg, $packSize), 2);
+                                        $fail(__("Insufficient stock! Available: :bags Bags + :loose KG (:totalKg KG). Cannot deduct :requestedKg KG.", [
+                                            'bags' => $availableBags,
+                                            'loose' => $availableLoose,
+                                            'totalKg' => number_format($availableKg, 2),
+                                            'requestedKg' => number_format($requestedKg, 2),
+                                        ]));
+                                    }
+                                },
+                            ]),
 
                         Forms\Components\Textarea::make('reason')
                             ->label(__('Reason / Notes (বিস্তারিত কারণ)'))
                             ->required(),
                     ])
-                    ->action(function (StockBalance $record, array $data): void {
+                    ->action(function (Tables\Actions\Action $action, StockBalance $record, array $data): void {
                         $product = $record->product;
                         $packSize = (float) ($product->pack_size ?: 25.00);
                         $inputQty = (float) $data['input_quantity'];
@@ -216,7 +239,10 @@ class StockBalanceResource extends Resource
                                 ->danger()
                                 ->title(__('Adjustment Failed'))
                                 ->body($e->getMessage())
+                                ->persistent()
                                 ->send();
+
+                            $action->halt();
                         }
                     }),
             ])
