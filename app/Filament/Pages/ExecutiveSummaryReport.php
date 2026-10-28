@@ -77,4 +77,16 @@ class ExecutiveSummaryReport extends Page implements HasForms
     {
         return __('Monthly Executive Summary & Profit & Loss Statement');
     }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('print')
+                ->label(__('Print A4 Statement (প্রিন্ট করুন)'))
+                ->icon('heroicon-o-printer')
+                ->color('primary')
+                ->url(fn () => route('reports.executive.print', ['from' => $this->from_date, 'to' => $this->to_date]))
+                ->openUrlInNewTab(),
+        ];
+    }
 }
