@@ -15,21 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Essential system roles
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        $staffRole = Role::firstOrCreate(['name' => 'Staff']);
-
-        // Default Owner/Admin account
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@fishfeed.com'],
-            [
-                'name' => 'Shop Owner',
-                'password' => Hash::make('password123'),
-            ]
-        );
-
-        if (! $admin->hasRole('Admin')) {
-            $admin->assignRole($adminRole);
-        }
+        $this->call(DemoDataSeeder::class);
     }
 }
