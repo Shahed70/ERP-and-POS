@@ -21,6 +21,7 @@ class Customer extends Model
         'credit_limit',
         'opening_due',
         'current_due',
+        'advance_balance',
         'is_active',
     ];
 
@@ -28,6 +29,7 @@ class Customer extends Model
         'credit_limit' => 'decimal:2',
         'opening_due' => 'decimal:2',
         'current_due' => 'decimal:2',
+        'advance_balance' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 
@@ -44,6 +46,11 @@ class Customer extends Model
     public function sales(): HasMany
     {
         return $this->hasMany(Sale::class);
+    }
+
+    public function saleReturns(): HasMany
+    {
+        return $this->hasMany(SaleReturn::class);
     }
 
     /**
