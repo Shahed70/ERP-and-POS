@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\SupplierResource\Pages\ViewSupplier;
+use App\Filament\Resources\SupplierResource\RelationManagers\ProductsRelationManager;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Supplier;
 use App\Models\SupplierLedger;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class SupplierTest extends TestCase
@@ -101,6 +104,29 @@ class SupplierTest extends TestCase
 
         $this->assertTrue($supplier->products->contains($product));
         $this->assertEquals(2100.00, (float) $supplier->products->first()->pivot->last_purchase_price);
+    }
+
+    public function test_can_attach_product_via_relation_manager(): void
+    {
+        $admin = User::where('email', 'admin@fishfeed.com')->first();
+        $supplier = Supplier::create([
+            'company_name' => 'CP Bangladesh ' . uniqid(),
+            'phone' => '01511223344',
+            'is_active' => true,
+        ]);
+        $product = $this->createProduct();
+
+        Livewire::actingAs($admin)
+            ->test(ProductsRelationManager::class, [
+                'ownerRecord' => $supplier,
+                'pageClass' => ViewSupplier::class,
+            ])
+            ->callTableAction('attach', data: [
+                'recordId' => $product->id,
+                'last_purchase_price' => 2200.00,
+            ]);
+
+        $this->assertTrue($supplier->fresh()->products->contains($product));
     }
 
     public function test_supplier_resource_pages_are_accessible_by_admin(): void

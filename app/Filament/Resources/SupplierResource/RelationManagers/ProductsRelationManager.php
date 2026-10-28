@@ -15,6 +15,11 @@ class ProductsRelationManager extends RelationManager
 
     protected static ?string $title = 'Supplied Products & Last Purchase Rates (সরবরাহকৃত খাদ্য ও ক্রয়দর)';
 
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -65,11 +70,23 @@ class ProductsRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->form(fn (Tables\Actions\AttachAction $action): array => [
                         $action->getRecordSelect()
-                            ->label(__('Select Feed Product')),
+                            ->label(__('Select Feed Product'))
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state) {
+                                    $product = Product::find($state);
+                                    if ($product) {
+                                        $set('last_purchase_price', $product->purchase_price);
+                                    }
+                                }
+                            }),
                         Forms\Components\TextInput::make('last_purchase_price')
                             ->label(__('Negotiated / Last Purchase Price per Bag (৳)'))
                             ->numeric()
                             ->prefix('৳')
+                            ->helperText(__('Default purchase rate from product catalog or negotiate a special rate.'))
                             ->default(fn (Forms\Get $get) => Product::find($get('recordId'))?->purchase_price),
                     ]),
             ])
