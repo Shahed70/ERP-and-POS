@@ -138,7 +138,7 @@ class Customer extends Model
     }
 
     /**
-     * Collect a due payment from customer and synchronize ledger.
+     * Collect a due payment from customer and synchronize ledger with FIFO invoice allocation.
      */
     public function collectDuePayment(
         float $amountPaid,
@@ -151,35 +151,18 @@ class Customer extends Model
             throw new Exception(__('Payment amount must be greater than zero.'));
         }
 
-        return DB::transaction(function () use ($amountPaid, $paymentMethod, $receiptNo, $notes, $performedBy) {
-            $customer = static::where('id', $this->id)->lockForUpdate()->first();
-            $userId = $performedBy ?? (auth()->id() ?? 1);
+        \App\Services\SaleService::collectPayment(
+            customer: $this,
+            amountPaid: $amountPaid,
+            paymentMethod: $paymentMethod,
+            receiptNo: $receiptNo,
+            notes: $notes,
+            userId: $performedBy
+        );
 
-            $currentDue = (float) $customer->current_due;
-            $newDue = round($currentDue - $amountPaid, 2);
+        $this->refresh();
 
-            $receipt = $receiptNo ?? sprintf('MR-%s-%04d', date('Ym'), CustomerLedger::where('transaction_type', 'due_collection')->count() + 1);
-
-            $ledger = CustomerLedger::create([
-                'customer_id' => $customer->id,
-                'transaction_type' => 'due_collection',
-                'reference_no' => $receipt,
-                'debit_amount' => 0.00,
-                'credit_amount' => $amountPaid,
-                'running_due_balance' => $newDue,
-                'payment_method' => $paymentMethod,
-                'notes' => $notes ?? __('Customer due payment received'),
-                'performed_by' => $userId,
-                'created_at' => now(),
-            ]);
-
-            $customer->current_due = $newDue;
-            $customer->save();
-
-            $this->current_due = $newDue;
-
-            return $ledger;
-        });
+        return $this->ledgers()->where('transaction_type', 'due_collection')->latest('id')->first();
     }
 
     protected static function booted(): void
