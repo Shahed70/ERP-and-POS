@@ -41,6 +41,81 @@ class Customer extends Model
         return $this->hasMany(CreditLimitOverride::class);
     }
 
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class);
+    }
+
+    /**
+     * Total purchases made by customer (grand total of sales invoices).
+     */
+    public function getTotalPurchasesAttribute(): float
+    {
+        if (\Illuminate\Support\Facades\Schema::hasTable('sales')) {
+            return (float) $this->sales()->sum('grand_total');
+        }
+
+        return (float) $this->ledgers()->where('transaction_type', 'sale_invoice')->sum('debit_amount');
+    }
+
+    /**
+     * Total paid by customer across sales and due collections.
+     */
+    public function getTotalPaidAttribute(): float
+    {
+        $paidAtSale = 0.0;
+        if (\Illuminate\Support\Facades\Schema::hasTable('sales')) {
+            $paidAtSale = (float) $this->sales()->sum('paid_amount');
+        }
+
+        $paidLater = (float) $this->ledgers()->where('transaction_type', 'due_collection')->sum('credit_amount');
+
+        return round($paidAtSale + $paidLater, 2);
+    }
+
+    /**
+     * Total new invoice dues accrued before collections.
+     */
+    public function getInvoiceDueAccruedAttribute(): float
+    {
+        if (\Illuminate\Support\Facades\Schema::hasTable('sales')) {
+            return (float) $this->sales()->sum('due_amount');
+        }
+
+        return (float) $this->ledgers()->where('transaction_type', 'sale_invoice')->sum('debit_amount');
+    }
+
+    /**
+     * Formatted string of distinct products bought by customer.
+     */
+    public function getPurchasedProductsListAttribute(): string
+    {
+        if (! \Illuminate\Support\Facades\Schema::hasTable('sale_items')) {
+            return __('No sales yet');
+        }
+
+        $products = Product::query()
+            ->whereHas('saleItems', function ($q) {
+                $q->whereHas('sale', fn ($sq) => $sq->where('customer_id', $this->id));
+            })
+            ->pluck('name')
+            ->toArray();
+
+        return ! empty($products) ? implode(', ', $products) : __('No purchases yet');
+    }
+
+    /**
+     * Last purchase date of this customer.
+     */
+    public function getLastPurchaseDateAttribute(): ?string
+    {
+        if (\Illuminate\Support\Facades\Schema::hasTable('sales')) {
+            return $this->sales()->max('sale_date');
+        }
+
+        return null;
+    }
+
     /**
      * Check if customer has an active credit limit.
      * 0.00 denotes unlimited credit.

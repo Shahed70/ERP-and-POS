@@ -131,18 +131,46 @@ class CustomerResource extends Resource
                     ->copyable()
                     ->icon('heroicon-m-phone'),
 
+                Tables\Columns\TextColumn::make('total_purchases')
+                    ->label(__('Purchases (মোট ক্রয়)'))
+                    ->money('BDT')
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        if (\Illuminate\Support\Facades\Schema::hasTable('sales')) {
+                            return $query->withSum('sales', 'grand_total')->orderBy('sales_sum_grand_total', $direction);
+                        }
+                        return $query;
+                    }),
+
+                Tables\Columns\TextColumn::make('total_paid')
+                    ->label(__('Paid (পরিশোধিত)'))
+                    ->money('BDT')
+                    ->color('success')
+                    ->weight('bold'),
+
+                Tables\Columns\TextColumn::make('opening_due')
+                    ->label(__('Opening Due (প্রারম্ভিক বাকি)'))
+                    ->money('BDT')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('current_due')
                     ->label(__('Total Due (মোট বাকি)'))
                     ->money('BDT')
                     ->sortable()
                     ->weight('bold')
-                    ->color(fn ($state): string => $state > 0 ? 'danger' : 'success')
+                    ->color(fn ($state): string => (float) $state > 0 ? 'danger' : 'success')
                     ->badge(),
+
+                Tables\Columns\TextColumn::make('purchased_products_list')
+                    ->label(__('Feeds Bought (ক্রয়কৃত খাদ্য)'))
+                    ->limit(35)
+                    ->tooltip(fn (Customer $record): string => $record->purchased_products_list)
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('credit_limit')
                     ->label(__('Credit Limit'))
                     ->formatStateUsing(fn ($state): string => (float) $state > 0 ? '৳' . number_format($state, 2) : __('Unlimited'))
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('address')
                     ->label(__('Address'))
@@ -270,22 +298,45 @@ class CustomerResource extends Resource
     {
         return $infolist
             ->schema([
-                Infolists\Components\Section::make(__('Financial & Due Summary (হিসাব বিবরণী)'))
+                Infolists\Components\Section::make(__('Financial Quick Check & Due Breakdown (আর্থিক সারসংক্ষেপ ও বাকির হিসাব)'))
+                    ->description(__('Comprehensive overview of lifetime purchases, payments, and outstanding balances.'))
                     ->schema([
+                        Infolists\Components\TextEntry::make('total_purchases')
+                            ->label(__('Total Purchases / মোট ক্রয় (৳)'))
+                            ->money('BDT')
+                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+                            ->weight('bold')
+                            ->helperText(__('Total value of all feeds purchased.')),
+
+                        Infolists\Components\TextEntry::make('total_paid')
+                            ->label(__('Initial & Due Paid / পরিশোধিত (৳)'))
+                            ->money('BDT')
+                            ->color('success')
+                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+                            ->weight('bold')
+                            ->helperText(__('Total money paid at sale + collected.')),
+
+                        Infolists\Components\TextEntry::make('opening_due')
+                            ->label(__('Opening Due / প্রারম্ভিক বাকি (৳)'))
+                            ->money('BDT')
+                            ->color('warning')
+                            ->helperText(__('Debt prior to software deployment.')),
+
                         Infolists\Components\TextEntry::make('current_due')
-                            ->label(__('Outstanding Due Balance (বর্তমান বাকি)'))
+                            ->label(__('Total Net Due / সর্বমোট বাকি (৳)'))
                             ->money('BDT')
                             ->badge()
-                            ->color(fn ($state): string => $state > 0 ? 'danger' : 'success')
-                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                            ->color(fn ($state): string => (float) $state > 0 ? 'danger' : 'success')
+                            ->size(Infolists\Components\TextEntry\TextEntrySize::Large)
+                            ->helperText(__('Current payable balance.')),
 
                         Infolists\Components\TextEntry::make('credit_limit')
                             ->label(__('Credit Limit (বাকি সীমা)'))
                             ->formatStateUsing(fn ($state): string => (float) $state > 0 ? '৳' . number_format($state, 2) : __('Unlimited (অসীম)')),
 
-                        Infolists\Components\TextEntry::make('opening_due')
-                            ->label(__('Opening Debt (প্রারম্ভিক বাকি)'))
-                            ->money('BDT'),
+                        Infolists\Components\TextEntry::make('last_purchase_date')
+                            ->label(__('Last Purchase Date (সর্বশেষ ক্রয়ের তারিখ)'))
+                            ->placeholder(__('No purchases yet')),
 
                         Infolists\Components\TextEntry::make('is_active')
                             ->label(__('Account Status'))
@@ -294,6 +345,13 @@ class CustomerResource extends Resource
                             ->formatStateUsing(fn ($state): string => $state ? __('Active') : __('Inactive')),
                     ])
                     ->columns(['default' => 2, 'md' => 4]),
+
+                Infolists\Components\Section::make(__('Feeds & Products Bought (ক্রয়কৃত মাছের খাদ্যের বিবরণী)'))
+                    ->schema([
+                        Infolists\Components\TextEntry::make('purchased_products_list')
+                            ->label(__('Purchased Products Catalog'))
+                            ->columnSpanFull(),
+                    ]),
 
                 Infolists\Components\Section::make(__('Personal & Farm Information'))
                     ->schema([

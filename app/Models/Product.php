@@ -65,6 +65,11 @@ class Product extends Model
         return $this->hasMany(StockLedger::class);
     }
 
+    public function saleItems(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+
     /**
      * Total stock in KG across all locations (or default shop).
      */
