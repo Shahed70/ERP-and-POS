@@ -70,6 +70,13 @@ class Product extends Model
         return $this->hasMany(SaleItem::class);
     }
 
+    public function suppliers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Supplier::class, 'product_supplier')
+            ->withPivot(['last_purchase_price', 'last_purchased_at'])
+            ->withTimestamps();
+    }
+
     /**
      * Total stock in KG across all locations (or default shop).
      */
