@@ -50,6 +50,64 @@ class Product extends Model
     }
 
     /**
+     * Relationship: Stock Balances across locations
+     */
+    public function stockBalances(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StockBalance::class);
+    }
+
+    /**
+     * Relationship: Stock Ledgers
+     */
+    public function stockLedgers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StockLedger::class);
+    }
+
+    /**
+     * Total stock in KG across all locations (or default shop).
+     */
+    public function getTotalStockKgAttribute(): float
+    {
+        return (float) $this->stockBalances()->sum('total_weight_kg');
+    }
+
+    /**
+     * Full sealed bags in stock.
+     */
+    public function getTotalBagsAttribute(): int
+    {
+        $packSize = (float) ($this->pack_size ?? 25.00);
+        if ($packSize <= 0) {
+            return 0;
+        }
+
+        return (int) floor($this->total_stock_kg / $packSize);
+    }
+
+    /**
+     * Loose KG in stock.
+     */
+    public function getTotalLooseKgAttribute(): float
+    {
+        $packSize = (float) ($this->pack_size ?? 25.00);
+        if ($packSize <= 0) {
+            return 0.00;
+        }
+
+        return round(fmod($this->total_stock_kg, $packSize), 2);
+    }
+
+    /**
+     * Formatted stock display: "42 Bags + 12.5 KG"
+     */
+    public function getStockDisplayAttribute(): string
+    {
+        return "{$this->total_bags} Bags + {$this->total_loose_kg} KG";
+    }
+
+    /**
      * Helper to compute default loose rate if not explicitly overridden.
      */
     public function getEffectiveLoosePricePerKgAttribute(): float
@@ -82,6 +140,16 @@ class Product extends Model
             if ($product->allow_loose_sale && empty($product->loose_sale_price_per_kg) && (float) $product->pack_size > 0) {
                 $product->loose_sale_price_per_kg = round((float) $product->sale_price / (float) $product->pack_size, 2);
             }
+        });
+
+        static::created(function (Product $product) {
+            $locId = Location::getDefault()?->id ?? 1;
+            StockBalance::firstOrCreate([
+                'location_id' => $locId,
+                'product_id' => $product->id,
+            ], [
+                'total_weight_kg' => 0.00,
+            ]);
         });
 
         static::updating(function (Product $product) {
