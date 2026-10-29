@@ -14,7 +14,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \Filament\Notifications\Auth\VerifyEmail::class,
+            \App\Notifications\Auth\VerifyEmail::class
+        );
     }
 
     /**

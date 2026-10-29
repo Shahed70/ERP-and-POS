@@ -98,12 +98,61 @@ class UserResource extends Resource
                         default => 'gray',
                     }),
 
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->label(__('Status (ভেরিফিকেশন)'))
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-clock')
+                    ->trueColor('success')
+                    ->falseColor('warning')
+                    ->tooltip(fn (User $record): string => $record->hasVerifiedEmail() ? __('Email Verified') : __('Pending Verification')),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Registered (নিবন্ধন তারিখ)'))
                     ->dateTime('d M Y, h:i A')
                     ->sortable(),
             ])
             ->actions([
+                Tables\Actions\Action::make('verifyNow')
+                    ->label(__('Verify (ভেরিফাই)'))
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (User $record): bool => ! $record->hasVerifiedEmail())
+                    ->requiresConfirmation()
+                    ->modalHeading(__('Verify User Email'))
+                    ->modalDescription(fn (User $record) => __("Are you sure you want to manually verify the email for {$record->name} ({$record->email})?"))
+                    ->action(function (User $record) {
+                        $record->markEmailAsVerified();
+                        \Filament\Notifications\Notification::make()
+                            ->title(__('ইমেইল সফলভাবে ভেরিফাই করা হয়েছে'))
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('resendVerification')
+                    ->label(__('Resend Link (লিঙ্ক পাঠান)'))
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('info')
+                    ->visible(fn (User $record): bool => ! $record->hasVerifiedEmail())
+                    ->action(function (User $record) {
+                        try {
+                            $notification = app(\App\Notifications\Auth\VerifyEmail::class);
+                            $notification->url = \Filament\Facades\Filament::getVerifyEmailUrl($record);
+                            $record->notifyNow($notification);
+
+                            \Filament\Notifications\Notification::make()
+                                ->title(__('ভেরিফিকেশন ইমেইল সফলভাবে পাঠানো হয়েছে'))
+                                ->success()
+                                ->send();
+                        } catch (\Throwable $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->title(__('ইমেইল পাঠানো ব্যর্থ হয়েছে: ') . $e->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
                     ->hidden(fn (User $record): bool => $record->id === auth()->id()),

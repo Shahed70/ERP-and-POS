@@ -5,8 +5,9 @@ namespace Tests\Feature;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
+use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
-use Filament\Notifications\Auth\VerifyEmail;
+use App\Notifications\Auth\VerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -158,5 +159,21 @@ class GmailAuthAndVerificationTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'email' => 'manager@otherdomain.com',
         ]);
+    }
+
+    public function test_admin_can_manually_verify_pending_user_in_user_resource(): void
+    {
+        $admin = User::where('email', 'amaremail234@gmail.com')->first();
+        $unverified = User::factory()->unverified()->create([
+            'email' => 'manual.verify.' . uniqid() . '@gmail.com',
+        ]);
+        $this->assertFalse($unverified->hasVerifiedEmail());
+
+        Livewire::actingAs($admin)
+            ->test(ListUsers::class)
+            ->callTableAction('verifyNow', $unverified);
+
+        $unverified->refresh();
+        $this->assertTrue($unverified->hasVerifiedEmail(), 'Admin action must mark email as verified');
     }
 }

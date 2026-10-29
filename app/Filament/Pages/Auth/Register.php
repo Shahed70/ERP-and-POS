@@ -36,4 +36,33 @@ class Register extends BaseRegister
 
         return $user;
     }
+
+    /**
+     * Send email verification notification synchronously with error resilience.
+     */
+    protected function sendEmailVerificationNotification(Model $user): void
+    {
+        if (! $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail || $user->hasVerifiedEmail()) {
+            return;
+        }
+
+        try {
+            $notification = app(\App\Notifications\Auth\VerifyEmail::class);
+            $notification->url = \Filament\Facades\Filament::getVerifyEmailUrl($user);
+
+            // Send immediately (synchronously)
+            $user->notifyNow($notification);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Email verification delivery error: ' . $e->getMessage(), [
+                'recipient' => $user->email,
+            ]);
+
+            \Filament\Notifications\Notification::make()
+                ->title('ইমেইল পাঠানো সম্ভব হয়নি / Email Delivery Warning')
+                ->body('আপনার অ্যাকাউন্ট তৈরি হয়েছে। তবে মেইল সার্ভার সংযোগের কারণে ভেরিফিকেশন ইমেইলটি পাঠানো যায়নি। অনুগ্রহ করে অ্যাডমিনের সাথে যোগাযোগ করুন অথবা পরে আবার চেষ্টা করুন।')
+                ->warning()
+                ->persistent()
+                ->send();
+        }
+    }
 }
