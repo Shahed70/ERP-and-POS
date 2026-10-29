@@ -46,7 +46,7 @@ class DashboardTest extends TestCase
         $response->assertSeeLivewire(RecentSalesTableWidget::class);
 
         // Header shows Admin badge and action buttons
-        $response->assertSee('Admin / স্বত্বাধিকারী');
+        $response->assertSee('Admin');
         $response->assertSee('+ New Sale (POS)');
         $response->assertSee('+ Purchase (ক্রয়)');
     }
@@ -60,7 +60,7 @@ class DashboardTest extends TestCase
         $response->assertSuccessful();
 
         // Header shows Viewer badge
-        $response->assertSee('Viewer / পর্যবেক্ষক');
+        $response->assertSee('Viewer');
 
         // Quick create actions like "+ New Sale (POS)" and "+ Purchase" are hidden for viewer
         $response->assertDontSee('+ New Sale (POS)');

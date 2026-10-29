@@ -68,16 +68,46 @@ class DemoDataSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
         $viewerRole = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);
 
+        // Primary Administrator Credentials
         $admin = User::firstOrCreate(
-            ['email' => 'admin@fishfeed.com'],
-            ['name' => 'Haji Rafiqul Islam (Shop Owner)', 'password' => Hash::make('password123')]
+            ['email' => 'amaremail234@gmail.com'],
+            [
+                'name' => 'Haji Rafiqul Islam (Shop Owner)',
+                'password' => Hash::make('shahed@456'),
+                'email_verified_at' => now(),
+            ]
         );
+        $admin->update([
+            'password' => Hash::make('shahed@456'),
+            'email_verified_at' => now(),
+        ]);
         $admin->syncRoles([$adminRole]);
 
-        $viewer = User::firstOrCreate(
-            ['email' => 'staff@fishfeed.com'],
-            ['name' => 'Md. Shaheen (Cashier / Viewer)', 'password' => Hash::make('password123')]
+        // Legacy admin for existing automated test fixtures
+        $legacyAdmin = User::firstOrCreate(
+            ['email' => 'admin@fishfeed.com'],
+            [
+                'name' => 'Haji Rafiqul Islam (Shop Owner)',
+                'password' => Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
         );
+        $legacyAdmin->update([
+            'email_verified_at' => now(),
+        ]);
+        $legacyAdmin->syncRoles([$adminRole]);
+
+        $viewer = User::firstOrCreate(
+            ['email' => 'staff.fishfeed@gmail.com'],
+            [
+                'name' => 'Md. Shaheen (Cashier / Viewer)',
+                'password' => Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $viewer->update([
+            'email_verified_at' => now(),
+        ]);
         $viewer->syncRoles([$viewerRole]);
 
         // 2. Shop Settings

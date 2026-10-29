@@ -49,6 +49,10 @@ class UserResource extends Resource
                             ->label(__('Email Address (ইমেইল)'))
                             ->email()
                             ->required()
+                            ->rules(['regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/i'])
+                            ->validationMessages([
+                                'regex' => 'Only Google Gmail (@gmail.com) addresses are allowed.',
+                            ])
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
 

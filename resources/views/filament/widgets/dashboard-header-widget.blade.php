@@ -13,9 +13,9 @@
 
             <h1 class="text-l md:text-3xl font-black tracking-tight text-white flex items-center gap-2 pt-2">
                 {{ __('স্বাগতম,') }} {{ $user?->name ?? __('User') }}
-                <!-- <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-500/30 text-primary-200 border border-primary-400/40">
-                    {{ $isAdmin ? __('Admin / স্বত্বাধিকারী') : __('Viewer / পর্যবেক্ষক') }}
-                </span> -->
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-500/30 text-primary-200 border border-primary-400/40">
+                    {{ $isAdmin ? __('Admin') : __('Viewer') }}
+                </span>
             </h1>
 
             <p class="text-sm text-slate-300 py-3">
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Quick Action Buttons -->
-        <div class="flex flex-wrap items-center gap-4">
+        <div class="flex flex-wrap items-center gap-3" style="margin-top: -30px">
             @if($isAdmin)
                 <a href="/admin/sales/create"
                    class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm bg-primary-500 hover:bg-primary-600 text-white shadow-sm transition hover:scale-102">
