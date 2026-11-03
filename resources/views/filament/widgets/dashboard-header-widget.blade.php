@@ -47,11 +47,14 @@
                         @endif
                     </h1>
 
-                    <p class="text-sm text-slate-300/90 flex items-center gap-2 pt-0.5">
+                    <div class="flex items-center gap-2 pt-0.5">
+                        @if($shop->getLogoUrl())
+                            <img src="{{ $shop->getLogoUrl() }}" alt="{{ $shop->shop_name }}" class="h-6 w-auto max-w-[50px] object-contain rounded bg-white/10 p-0.5 border border-white/20 shrink-0">
+                        @endif
                         <span class="font-extrabold text-teal-300 tracking-wide">{{ $shop->shop_name }}</span>
                         <span class="text-slate-500">·</span>
-                        <span class="text-xs md:text-sm text-slate-300">{{ $shop->shop_tagline }}</span>
-                    </p>
+                        <span class="text-xs md:text-sm text-slate-300 truncate">{{ $shop->shop_tagline }}</span>
+                    </div>
                 </div>
             </div>
 

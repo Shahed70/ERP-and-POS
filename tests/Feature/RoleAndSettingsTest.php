@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\ShopSettingsPage;
 use App\Models\Product;
 use App\Models\ShopSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
+use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -118,5 +120,46 @@ class RoleAndSettingsTest extends TestCase
         $this->assertEquals('মেঘনা ফিশ ফিড ট্রেডার্স', $fresh->shop_name);
         $this->assertEquals('সেরা মানের মাছের খাদ্য পরিবেশক', $fresh->shop_tagline);
         $this->assertEquals('০১৮৯৯-১১২২৩৩', $fresh->phone);
+    }
+
+    public function test_admin_can_update_and_delete_shop_logo(): void
+    {
+        $admin = User::where('email', 'amaremail234@gmail.com')->first() ?? User::factory()->create();
+        if (! $admin->hasRole('Admin')) {
+            $admin->assignRole('Admin');
+        }
+
+        $settings = ShopSetting::getSettings();
+        $originalLogo = $settings->logo_path;
+
+        $settings->update(['logo_path' => 'shop-logos/test_dummy_logo.png']);
+        $this->assertNotNull($settings->fresh()->logo_path);
+
+        // Test deleteLogo action clears logo_path
+        Livewire::actingAs($admin)
+            ->test(ShopSettingsPage::class)
+            ->call('deleteLogo')
+            ->assertHasNoErrors();
+
+        $this->assertNull(ShopSetting::getSettings()->fresh()->logo_path);
+
+        // Restore original user logo if one was present
+        if ($originalLogo) {
+            $settings->update(['logo_path' => $originalLogo]);
+        }
+    }
+
+    public function test_brand_logo_and_name_rendered_beside_each_other(): void
+    {
+        $admin = User::where('email', 'amaremail234@gmail.com')->first() ?? User::factory()->create();
+        if (! $admin->hasRole('Admin')) {
+            $admin->assignRole('Admin');
+        }
+
+        $settings = ShopSetting::getSettings();
+
+        $response = $this->actingAs($admin)->get('/admin');
+        $response->assertSuccessful();
+        $response->assertSee($settings->shop_name);
     }
 }

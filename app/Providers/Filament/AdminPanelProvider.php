@@ -33,8 +33,10 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->brandName(fn () => \App\Models\ShopSetting::getSettings()->shop_name)
-            ->brandLogo(fn () => \App\Models\ShopSetting::getSettings()->getLogoUrl())
-            ->brandLogoHeight('2.5rem')
+            ->brandLogo(fn () => view('filament.components.brand-logo-and-name', [
+                'shop' => \App\Models\ShopSetting::getSettings(),
+            ]))
+            ->brandLogoHeight('2.75rem')
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups()
             ->font('Plus Jakarta Sans')
