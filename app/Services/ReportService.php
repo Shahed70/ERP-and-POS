@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Customer;
 use App\Models\Employee;
+use App\Models\Expense;
 use App\Models\Location;
 use App\Models\Product;
 use App\Models\Purchase;
@@ -65,7 +66,26 @@ class ReportService
             ->selectRaw('SUM(stock_adjustments.quantity_kg * (products.purchase_price / COALESCE(products.pack_size, 25))) as wastage_val')
             ->value('wastage_val') ?? 0.00;
 
-        $totalOperatingExpenses = round($salariesPaid + $purchaseFreight + $wastageCost, 2);
+        // D. General Operating Overhead Expenses (Shop rent, electricity, warehouse, snacks, others)
+        $expensesQuery = Expense::whereBetween('expense_date', [$from->toDateString(), $to->toDateString()]);
+
+        $shopRent = (float) (clone $expensesQuery)->where('category', Expense::CATEGORY_SHOP_RENT)->sum('amount');
+        $electricityBill = (float) (clone $expensesQuery)->where('category', Expense::CATEGORY_ELECTRICITY_BILL)->sum('amount');
+        $warehouseRent = (float) (clone $expensesQuery)->where('category', Expense::CATEGORY_WAREHOUSE_RENT)->sum('amount');
+        $snackExpenses = (float) (clone $expensesQuery)->where('category', Expense::CATEGORY_SNACK_EXPENSES)->sum('amount');
+        $otherExpenses = (float) (clone $expensesQuery)->where(function ($q) {
+            $q->where('category', Expense::CATEGORY_OTHERS)
+                ->orWhereNotIn('category', [
+                    Expense::CATEGORY_SHOP_RENT,
+                    Expense::CATEGORY_ELECTRICITY_BILL,
+                    Expense::CATEGORY_WAREHOUSE_RENT,
+                    Expense::CATEGORY_SNACK_EXPENSES,
+                ]);
+        })->sum('amount');
+
+        $generalExpensesTotal = round($shopRent + $electricityBill + $warehouseRent + $snackExpenses + $otherExpenses, 2);
+
+        $totalOperatingExpenses = round($salariesPaid + $purchaseFreight + $wastageCost + $generalExpensesTotal, 2);
 
         // 5. Net Profit
         $netProfit = round($grossProfit - $totalOperatingExpenses, 2);
@@ -106,6 +126,12 @@ class ReportService
             'gross_margin_percent' => $grossMarginPercent,
             'expenses' => [
                 'salaries_paid' => $salariesPaid,
+                'shop_rent' => $shopRent,
+                'electricity_bill' => $electricityBill,
+                'warehouse_rent' => $warehouseRent,
+                'snack_expenses' => $snackExpenses,
+                'other_expenses' => $otherExpenses,
+                'general_expenses_total' => $generalExpensesTotal,
                 'purchase_freight' => $purchaseFreight,
                 'wastage_cost' => round($wastageCost, 2),
                 'total_expenses' => $totalOperatingExpenses,

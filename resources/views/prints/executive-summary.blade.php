@@ -267,6 +267,22 @@
                     <td colspan="2">3. Operating Overhead Expenses (পরিচালন ব্যয়)</td>
                 </tr>
                 <tr>
+                    <td style="padding-left: 20px;">Shop Rent (দোকান ভাড়া)</td>
+                    <td class="text-right">-৳{{ number_format($data['expenses']['shop_rent'] ?? 0, 2) }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">Electricity Bill (বিদ্যুৎ বিল)</td>
+                    <td class="text-right">-৳{{ number_format($data['expenses']['electricity_bill'] ?? 0, 2) }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">Warehouse Rent (গোডাউন ভাড়া)</td>
+                    <td class="text-right">-৳{{ number_format($data['expenses']['warehouse_rent'] ?? 0, 2) }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">Snack & Refreshment Expenses (আপ্যায়ন / নাস্তা খরচ)</td>
+                    <td class="text-right">-৳{{ number_format($data['expenses']['snack_expenses'] ?? 0, 2) }}</td>
+                </tr>
+                <tr>
                     <td style="padding-left: 20px;">Staff Salaries & Allowances (কর্মচারী বেতন)</td>
                     <td class="text-right">-৳{{ number_format($data['expenses']['salaries_paid'], 2) }}</td>
                 </tr>
@@ -277,6 +293,10 @@
                 <tr>
                     <td style="padding-left: 20px;">Damage, Torn & Wastage Feed Loss (ক্ষতিগ্রস্ত পণ্য)</td>
                     <td class="text-right">-৳{{ number_format($data['expenses']['wastage_cost'], 2) }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 20px;">Other Miscellaneous Expenses (অন্যান্য বিবিধ খরচ)</td>
+                    <td class="text-right">-৳{{ number_format($data['expenses']['other_expenses'] ?? 0, 2) }}</td>
                 </tr>
                 <tr class="total-row" style="color: #b91c1c;">
                     <td>Total Operating Expenses (মোট পরিচালন ব্যয়)</td>

@@ -57,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
             Models\Employee::class,
             Models\Salary::class,
             Models\SalaryAdvance::class,
+            Models\Expense::class,
             Models\User::class,
             Models\ShopSetting::class,
         ];

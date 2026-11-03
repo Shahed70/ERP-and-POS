@@ -460,7 +460,7 @@
                     ৳{{ number_format($exp['total_expenses'], 2) }}
                 </div>
                 <div class="pnl-kpi-sub">
-                    {{ __('Salaries, Freight & Wastage') }}
+                    {{ __('Rent, Bills, Snacks, Salaries & Overheads') }}
                 </div>
             </div>
 
@@ -560,7 +560,39 @@
                 <div class="pnl-section-group">
                     <div class="pnl-section-header">
                         <span>{{ __('3. Operating Expenses (দোকান পরিচালন ব্যয়)') }}</span>
-                        <span style="font-size: 0.75rem; text-transform: none; color: #64748b;">(Overhead disbursements)</span>
+                        <span style="font-size: 0.75rem; text-transform: none; color: #64748b;">(Rent, bills, staff, snacks & overheads)</span>
+                    </div>
+
+                    <div class="pnl-row">
+                        <div class="pnl-row-label">
+                            <span class="pnl-row-label-primary">{{ __('Shop Rent (দোকান ভাড়া)') }}</span>
+                            <span class="pnl-row-label-sub">{{ __('Monthly commercial shop premise lease') }}</span>
+                        </div>
+                        <span class="pnl-row-value text-amber-600 dark:text-amber-400">-৳{{ number_format($exp['shop_rent'] ?? 0, 2) }}</span>
+                    </div>
+
+                    <div class="pnl-row">
+                        <div class="pnl-row-label">
+                            <span class="pnl-row-label-primary">{{ __('Electricity Bill (বিদ্যুৎ বিল)') }}</span>
+                            <span class="pnl-row-label-sub">{{ __('Power & utility bills for store & godown') }}</span>
+                        </div>
+                        <span class="pnl-row-value text-amber-600 dark:text-amber-400">-৳{{ number_format($exp['electricity_bill'] ?? 0, 2) }}</span>
+                    </div>
+
+                    <div class="pnl-row">
+                        <div class="pnl-row-label">
+                            <span class="pnl-row-label-primary">{{ __('Warehouse Rent (গোডাউন ভাড়া)') }}</span>
+                            <span class="pnl-row-label-sub">{{ __('Central feed godown & storage facility lease') }}</span>
+                        </div>
+                        <span class="pnl-row-value text-amber-600 dark:text-amber-400">-৳{{ number_format($exp['warehouse_rent'] ?? 0, 2) }}</span>
+                    </div>
+
+                    <div class="pnl-row">
+                        <div class="pnl-row-label">
+                            <span class="pnl-row-label-primary">{{ __('Snack Expenses (আপ্যায়ন / নাস্তা খরচ)') }}</span>
+                            <span class="pnl-row-label-sub">{{ __('Refreshment, tea & entertainment for clients & staff') }}</span>
+                        </div>
+                        <span class="pnl-row-value text-amber-600 dark:text-amber-400">-৳{{ number_format($exp['snack_expenses'] ?? 0, 2) }}</span>
                     </div>
 
                     <div class="pnl-row">
@@ -585,6 +617,14 @@
                             <span class="pnl-row-label-sub">{{ __('Rat-bite and torn bag godown write-offs') }}</span>
                         </div>
                         <span class="pnl-row-value text-rose-600 dark:text-rose-400">-৳{{ number_format($exp['wastage_cost'], 2) }}</span>
+                    </div>
+
+                    <div class="pnl-row">
+                        <div class="pnl-row-label">
+                            <span class="pnl-row-label-primary">{{ __('Other Operating Expenses (অন্যান্য খরচ)') }}</span>
+                            <span class="pnl-row-label-sub">{{ __('Stationery, cleaning, tools, telephone & miscellaneous') }}</span>
+                        </div>
+                        <span class="pnl-row-value text-amber-600 dark:text-amber-400">-৳{{ number_format($exp['other_expenses'] ?? 0, 2) }}</span>
                     </div>
 
                     <div class="pnl-subtotal-bar warning">
