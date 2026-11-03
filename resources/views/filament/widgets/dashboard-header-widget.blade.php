@@ -2,10 +2,6 @@
     <div class="relative overflow-hidden rounded-3xl p-6 md:p-8 text-white shadow-xl border border-teal-500/20"
          style="background: radial-gradient(circle at 15% 20%, rgba(20, 184, 166, 0.22) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.18) 0%, transparent 45%), linear-gradient(135deg, #06101e 0%, #0c1a2e 50%, #062b3b 100%);">
 
-        {{-- Subtle decorative grid overlay --}}
-        <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
-             style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
-
         <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {{-- Left Column: Store & User Greeting --}}
             <div class="space-y-3">
