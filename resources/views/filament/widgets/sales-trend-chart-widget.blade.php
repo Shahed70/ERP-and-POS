@@ -110,26 +110,49 @@
             </div>
         </div>
 
-        {{-- Category Breakdown Share Pills --}}
+        {{-- Category Breakdown Share Cards --}}
         @if(!empty($categoryBreakdown))
-            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
-                <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5 flex items-center justify-between">
-                    <span>{{ __('Feed Category Stock & Dispatch Turnover') }}</span>
-                    <span class="text-teal-600 dark:text-teal-400 font-semibold text-[11px]">{{ __('Live Godown Status') }}</span>
+            <div class="feed-category-section mt-8 pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
+                <div class="feed-category-section-header mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span>
+                        <h4 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                            {{ __('Feed Category Stock & Dispatch Turnover') }}
+                        </h4>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-700 dark:bg-teal-950/70 dark:text-teal-300 border border-teal-200/80 dark:border-teal-800/60 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+                        {{ __('Live Godown Status') }}
+                    </span>
                 </div>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+
+                <div class="feed-category-grid">
                     @foreach($categoryBreakdown as $cat)
-                        <div class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/40 flex flex-col justify-between transition hover:border-teal-400/40">
-                            <span class="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">
-                                {{ $cat['name'] }}
-                            </span>
-                            <div class="flex items-baseline justify-between mt-1">
-                                <span class="text-sm font-extrabold text-slate-900 dark:text-white">
-                                    {{ $cat['bags'] }} <span class="text-[10px] font-normal text-slate-400">Bags</span>
+                        <div class="feed-category-card">
+                            <div class="feed-category-header">
+                                <span class="feed-category-name" title="{{ $cat['name'] }}">
+                                    {{ $cat['name'] }}
                                 </span>
-                                <span class="text-[11px] font-bold text-teal-600 dark:text-teal-400">
-                                    {{ $cat['share'] }}%
-                                </span>
+                            </div>
+
+                            <div class="feed-category-body">
+                                <div class="feed-category-stat-row">
+                                    <div class="feed-category-bags-wrap">
+                                        <span class="feed-category-bags-val">
+                                            {{ $cat['bags'] }}
+                                        </span>
+                                        <span class="feed-category-bags-unit">
+                                            {{ __('Bags') }}
+                                        </span>
+                                    </div>
+                                    <span class="feed-category-badge">
+                                        {{ $cat['share'] }}%
+                                    </span>
+                                </div>
+
+                                <div class="feed-category-bar-track">
+                                    <div class="feed-category-bar-fill" style="width: {{ max(4, min(100, (int) $cat['share'])) }}%;"></div>
+                                </div>
                             </div>
                         </div>
                     @endforeach

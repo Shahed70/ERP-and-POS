@@ -135,7 +135,7 @@
     }
 
     /* ==========================================================================
-       CARDS & SECTIONS (Modern 1.25rem radius + soft glass glow)
+       CARDS & SECTIONS (Modern 1.25rem radius + soft glass glow + generous padding)
        ========================================================================== */
     .fi-section,
     .fi-card,
@@ -162,27 +162,45 @@
         border-color: rgba(51, 65, 85, 0.8) !important;
     }
 
+    /* Section Content Spacious Padding */
+    .fi-section-content {
+        padding: 1.6rem 1.75rem !important;
+    }
+
     /* Section Headers */
     .fi-section-header {
-        padding-bottom: 0.75rem !important;
+        padding-bottom: 0.85rem !important;
         border-bottom: 1px solid rgba(241, 245, 249, 0.9) !important;
-        margin-bottom: 1rem !important;
+        margin-bottom: 1.25rem !important;
     }
     .dark .fi-section-header {
         border-bottom-color: rgba(30, 41, 59, 0.6) !important;
+    }
+
+    /* Dashboard Widget Grid Spacing */
+    .fi-widgets-grid,
+    .fi-page-body > .grid {
+        gap: 1.5rem !important;
+    }
+    @media (min-width: 1024px) {
+        .fi-widgets-grid,
+        .fi-page-body > .grid {
+            gap: 1.75rem !important;
+        }
     }
 
     /* ==========================================================================
        STATS OVERVIEW WIDGET CARDS (Modern Fintech Style)
        ========================================================================== */
     .fi-wi-stats-overview {
-        gap: 1.15rem !important;
+        gap: 1.35rem !important;
+        margin-bottom: 0.75rem !important;
     }
     .fi-wi-stats-overview-stat {
         border-radius: 1.25rem !important;
         border: 1px solid rgba(226, 232, 240, 0.85) !important;
         background: #ffffff !important;
-        padding: 1.25rem !important;
+        padding: 1.4rem 1.6rem !important;
         box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         position: relative;
@@ -210,6 +228,8 @@
         letter-spacing: 0.04em !important;
         text-transform: uppercase !important;
         color: #64748b !important;
+        margin-bottom: 0.35rem !important;
+        line-height: 1.4 !important;
     }
     .dark .fi-wi-stats-overview-stat-label {
         color: #94a3b8 !important;
@@ -220,7 +240,8 @@
         letter-spacing: -0.02em !important;
         color: #0f172a !important;
         margin-top: 0.35rem !important;
-        margin-bottom: 0.35rem !important;
+        margin-bottom: 0.45rem !important;
+        line-height: 1.2 !important;
     }
     .dark .fi-wi-stats-overview-stat-value {
         color: #f8fafc !important;
@@ -228,7 +249,164 @@
     .fi-wi-stats-overview-stat-description {
         font-size: 0.8rem !important;
         font-weight: 500 !important;
+        line-height: 1.4 !important;
     }
+
+    /* ==========================================================================
+       FEED CATEGORY TURNOVER CARDS (Generous Padding & Anti-Congestion)
+       ========================================================================== */
+    .feed-category-section {
+        margin-top: 2rem !important;
+        padding-top: 1.5rem !important;
+    }
+    .feed-category-section-header {
+        margin-bottom: 1.25rem !important;
+    }
+    .feed-category-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+        gap: 1.25rem !important;
+    }
+    .feed-category-card {
+        padding: 1.35rem 1.5rem !important;
+        border-radius: 1.25rem !important;
+        background: rgba(248, 250, 252, 0.8) !important;
+        border: 1px solid rgba(226, 232, 240, 0.95) !important;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.04) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 120px !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .dark .feed-category-card {
+        background: rgba(15, 23, 42, 0.65) !important;
+        border-color: rgba(51, 65, 85, 0.85) !important;
+        box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35) !important;
+    }
+    .feed-category-card:hover {
+        transform: translateY(-2px) !important;
+        border-color: rgba(20, 184, 166, 0.5) !important;
+        box-shadow: 0 10px 24px -4px rgba(20, 184, 166, 0.15) !important;
+    }
+    .dark .feed-category-card:hover {
+        border-color: rgba(20, 184, 166, 0.55) !important;
+        box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .feed-category-header {
+        margin-bottom: 0.85rem !important;
+        padding-bottom: 0.25rem !important;
+    }
+
+    .feed-category-name {
+        font-size: 0.875rem !important;
+        font-weight: 700 !important;
+        line-height: 1.6 !important;
+        color: #334155 !important;
+        display: block !important;
+        word-break: break-word !important;
+    }
+    .dark .feed-category-name {
+        color: #e2e8f0 !important;
+    }
+
+    .feed-category-body {
+        margin-top: auto !important;
+        padding-top: 0.5rem !important;
+    }
+
+    .feed-category-stat-row {
+        display: flex !important;
+        align-items: baseline !important;
+        justify-content: space-between !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    .feed-category-bags-wrap {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 0.35rem !important;
+    }
+
+    .feed-category-bags-val {
+        font-size: 1.45rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        line-height: 1 !important;
+        color: #0f172a !important;
+    }
+    .dark .feed-category-bags-val {
+        color: #ffffff !important;
+    }
+
+    .feed-category-bags-unit {
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        color: #94a3b8 !important;
+    }
+
+    .feed-category-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 0.25rem 0.65rem !important;
+        border-radius: 9999px !important;
+        font-size: 0.75rem !important;
+        font-weight: 800 !important;
+        background: rgba(20, 184, 166, 0.12) !important;
+        color: #0d9488 !important;
+        border: 1px solid rgba(20, 184, 166, 0.28) !important;
+        box-shadow: 0 1px 2px 0 rgba(20, 184, 166, 0.08) !important;
+    }
+    .dark .feed-category-badge {
+        background: rgba(20, 184, 166, 0.2) !important;
+        color: #2dd4bf !important;
+        border-color: rgba(20, 184, 166, 0.45) !important;
+    }
+
+    .feed-category-bar-track {
+        width: 100% !important;
+        height: 5px !important;
+        border-radius: 9999px !important;
+        background: rgba(226, 232, 240, 0.85) !important;
+        overflow: hidden !important;
+    }
+    .dark .feed-category-bar-track {
+        background: rgba(30, 41, 59, 0.85) !important;
+    }
+
+    .feed-category-bar-fill {
+        height: 100% !important;
+        border-radius: 9999px !important;
+        background: linear-gradient(90deg, #14b8a6, #06b6d4) !important;
+        transition: width 0.4s ease-in-out !important;
+    }
+
+    /* Low Stock Alert Item Cards */
+    .low-stock-item-card {
+        padding: 1.25rem 1.35rem !important;
+        border-radius: 1.25rem !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .low-stock-item-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08) !important;
+    }
+    .dark .low-stock-item-card:hover {
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Fractional spacing safeguards */
+    .p-2\.5 { padding: 0.625rem !important; }
+    .p-3\.5 { padding: 0.875rem !important; }
+    .gap-2\.5 { gap: 0.625rem !important; }
+    .gap-3\.5 { gap: 0.875rem !important; }
+    .py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
+    .py-3\.5 { padding-top: 0.875rem !important; padding-bottom: 0.875rem !important; }
+    .px-3\.5 { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
+    .mb-2\.5 { margin-bottom: 0.625rem !important; }
 
     /* ==========================================================================
        TABLES (Clean Fintech Rows & Micro-Typography)
@@ -243,12 +421,16 @@
         letter-spacing: 0.06em !important;
         text-transform: uppercase !important;
         color: #64748b !important;
-        padding-top: 0.85rem !important;
-        padding-bottom: 0.85rem !important;
+        padding-top: 0.95rem !important;
+        padding-bottom: 0.95rem !important;
     }
     .dark .fi-ta-header-cell {
         background-color: rgba(15, 23, 42, 0.8) !important;
         color: #94a3b8 !important;
+    }
+    .fi-ta-cell {
+        padding-top: 0.9rem !important;
+        padding-bottom: 0.9rem !important;
     }
     .fi-ta-row {
         transition: background-color 0.15s ease !important;

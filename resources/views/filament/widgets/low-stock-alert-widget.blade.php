@@ -26,14 +26,14 @@
             @endif
         </x-slot>
 
-        <div class="space-y-3">
+        <div class="space-y-4">
             @forelse($lowStockItems as $product)
                 @php
                     $threshold = $product->reorder_level_bags ?? 20;
                     $isCritical = $product->total_bags <= 5;
                     $percent = $threshold > 0 ? min(100, max(8, round(($product->total_bags / $threshold) * 100))) : 50;
                 @endphp
-                <div class="p-3.5 rounded-2xl border transition-all duration-200 hover:shadow-md {{ $isCritical ? 'bg-gradient-to-r from-rose-50/60 to-white dark:from-rose-950/20 dark:to-slate-900/60 border-rose-200/90 dark:border-rose-900/50' : 'bg-gradient-to-r from-amber-50/60 to-white dark:from-amber-950/20 dark:to-slate-900/60 border-amber-200/90 dark:border-amber-900/50' }}">
+                <div class="low-stock-item-card border transition-all duration-200 hover:shadow-md {{ $isCritical ? 'bg-gradient-to-r from-rose-50/60 to-white dark:from-rose-950/20 dark:to-slate-900/60 border-rose-200/90 dark:border-rose-900/50' : 'bg-gradient-to-r from-amber-50/60 to-white dark:from-amber-950/20 dark:to-slate-900/60 border-amber-200/90 dark:border-amber-900/50' }}">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex items-start gap-3">
                             {{-- Icon Pill --}}
