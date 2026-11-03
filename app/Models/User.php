@@ -44,6 +44,22 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
+     * Send email verification notification using custom notification with error resilience.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        try {
+            $notification = app(\App\Notifications\Auth\VerifyEmail::class);
+            $notification->url = \Filament\Facades\Filament::getVerifyEmailUrl($this);
+            $this->notify($notification);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Email verification delivery failure: ' . $e->getMessage(), [
+                'recipient' => $this->email,
+            ]);
+        }
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
