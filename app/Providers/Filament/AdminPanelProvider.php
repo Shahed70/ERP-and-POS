@@ -10,6 +10,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -36,9 +37,23 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.5rem')
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups()
+            ->font('Plus Jakarta Sans')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Teal,
+                'gray' => Color::Slate,
+                'danger' => Color::Rose,
+                'warning' => Color::Amber,
+                'success' => Color::Emerald,
+                'info' => Color::Sky,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): \Illuminate\Contracts\Support\Htmlable => view('filament.custom-styles'),
+            )
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn (): \Illuminate\Contracts\Support\Htmlable => view('filament.topbar-quick-actions'),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

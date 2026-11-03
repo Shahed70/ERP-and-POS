@@ -9,7 +9,7 @@
     @endphp
 
     <!-- Date Range Filter Form -->
-    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm mb-6">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm mb-6">
         <form wire:submit="applyFilter" class="flex flex-wrap items-end gap-4">
             <div class="flex-1 min-w-[280px]">
                 {{ $this->form }}
@@ -24,41 +24,41 @@
 
     <!-- Summary KPI Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase">{{ __('Total Sacks Sold') }}</div>
-            <div class="text-2xl font-black text-gray-900 dark:text-white mt-1">{{ number_format($totalBagsSold) }} {{ __('Bags') }}</div>
-            <div class="text-xs text-primary-600 mt-1 font-semibold">{{ number_format($totalKgSold, 1) }} KG {{ __('total weight') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Total Sacks Sold') }}</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white mt-1.5">{{ number_format($totalBagsSold) }} {{ __('Bags') }}</div>
+            <div class="text-xs text-teal-600 dark:text-teal-400 mt-1 font-semibold">{{ number_format($totalKgSold, 1) }} KG {{ __('total weight') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase">{{ __('Sales Revenue') }}</div>
-            <div class="text-2xl font-black text-gray-900 dark:text-white mt-1">৳{{ number_format($totalRevenue, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Realized gross turnover') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Sales Revenue') }}</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white mt-1.5">৳{{ number_format($totalRevenue, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Realized gross turnover') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase">{{ __('Purchase Cost (COGS)') }}</div>
-            <div class="text-2xl font-black text-rose-600 mt-1">৳{{ number_format($totalCost, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Inventory procurement cost') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Purchase Cost (COGS)') }}</div>
+            <div class="text-2xl font-black text-rose-600 mt-1.5">৳{{ number_format($totalCost, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Inventory procurement cost') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-emerald-600 uppercase">{{ __('Gross Profit') }}</div>
-            <div class="text-2xl font-black text-emerald-600 mt-1">৳{{ number_format($totalProfit, 2) }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">{{ __('Gross Profit') }}</div>
+            <div class="text-2xl font-black text-emerald-600 mt-1.5">৳{{ number_format($totalProfit, 2) }}</div>
             <div class="text-xs text-emerald-600 font-bold mt-1">
                 {{ $totalRevenue > 0 ? round(($totalProfit / $totalRevenue) * 100, 1) : 0 }}% {{ __('Overall Margin') }}
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-sky-600 uppercase">{{ __('Feed Lines Active') }}</div>
-            <div class="text-2xl font-black text-sky-600 mt-1">{{ $products->count() }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Products in catalog') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-sky-600 uppercase tracking-wider">{{ __('Feed Lines Active') }}</div>
+            <div class="text-2xl font-black text-sky-600 mt-1.5">{{ $products->count() }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Products in catalog') }}</div>
         </div>
     </div>
 
     <!-- Products Movement Velocity Table -->
-    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm border-collapse">
                 <thead>

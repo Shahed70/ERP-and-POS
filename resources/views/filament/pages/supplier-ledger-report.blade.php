@@ -8,27 +8,27 @@
 
     <!-- Summary KPI Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase">{{ __('Total Purchases Billed (মোট ক্রয় চালান)') }}</div>
-            <div class="text-2xl font-black text-gray-900 dark:text-white mt-1">৳{{ number_format($totalBilled, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Across all feed mills') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Total Purchases Billed (মোট ক্রয় চালান)') }}</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white mt-1.5">৳{{ number_format($totalBilled, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Across all feed mills') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-emerald-600 uppercase">{{ __('Total Payments Disbursed (মোট পরিশোধ)') }}</div>
-            <div class="text-2xl font-black text-emerald-600 mt-1">৳{{ number_format($totalPaid, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Bank & cash settlements') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">{{ __('Total Payments Disbursed (মোট পরিশোধ)') }}</div>
+            <div class="text-2xl font-black text-emerald-600 mt-1.5">৳{{ number_format($totalPaid, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Bank & cash settlements') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-amber-600 uppercase">{{ __('Total Outstanding Payable (কোম্পানির দেনা)') }}</div>
-            <div class="text-2xl font-black text-amber-600 mt-1">৳{{ number_format($totalPayable, 2) }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-amber-600 uppercase tracking-wider">{{ __('Total Outstanding Payable (কোম্পানির দেনা)') }}</div>
+            <div class="text-2xl font-black text-amber-600 mt-1.5">৳{{ number_format($totalPayable, 2) }}</div>
             <div class="text-xs text-amber-600/80 font-semibold mt-1">{{ __('Current unpaid obligations') }}</div>
         </div>
     </div>
 
     <!-- Supplier Summary Table -->
-    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm border-collapse">
                 <thead>

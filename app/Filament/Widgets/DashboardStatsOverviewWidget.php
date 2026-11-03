@@ -21,16 +21,27 @@ class DashboardStatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
 
         // 1. Today's Sales
         $todaySalesAmount = (float) Sale::whereDate('sale_date', $today)->sum('grand_total');
+        $yesterdaySales = (float) Sale::whereDate('sale_date', $yesterday)->sum('grand_total');
         $todayInvoicesCount = Sale::whereDate('sale_date', $today)->count();
+
+        $diff = $todaySalesAmount - $yesterdaySales;
+        $trendText = $yesterdaySales > 0
+            ? (($diff >= 0 ? '+' : '') . number_format(($diff / $yesterdaySales) * 100, 1) . '% vs yesterday · ')
+            : '';
 
         // 7-day sparkline trend
         $past7DaysSales = [];
+        $past7DaysCollection = [];
         for ($i = 6; $i >= 0; $i--) {
             $d = now()->subDays($i)->toDateString();
-            $past7DaysSales[] = (float) Sale::whereDate('sale_date', $d)->sum('grand_total');
+            $s = (float) Sale::whereDate('sale_date', $d)->sum('grand_total');
+            $c = (float) Sale::whereDate('sale_date', $d)->sum('paid_amount') + (float) PaymentCollection::whereDate('payment_date', $d)->sum('amount_paid');
+            $past7DaysSales[] = $s;
+            $past7DaysCollection[] = $c;
         }
 
         // 2. Today's Cash Collection (POS sales cash paid + payment collections)
@@ -59,14 +70,15 @@ class DashboardStatsOverviewWidget extends BaseWidget
 
         return [
             Stat::make(__('TODAY\'S SALES (আজকের বিক্রয়)'), '৳' . number_format($todaySalesAmount, 2))
-                ->description("{$todayInvoicesCount} " . __('invoices generated today'))
+                ->description("{$trendText}{$todayInvoicesCount} " . __('invoices today'))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart($past7DaysSales)
                 ->color('success'),
 
             Stat::make(__('TODAY\'S COLLECTION (নগদ আদায়)'), '৳' . number_format($todayTotalCollection, 2))
-                ->description(__('POS cash + Due recovery'))
+                ->description('Cash: ৳' . number_format($todaySaleCash) . ' · Due Recovery: ৳' . number_format($todayPaymentCollection))
                 ->descriptionIcon('heroicon-m-banknotes')
+                ->chart($past7DaysCollection)
                 ->color('primary'),
 
             Stat::make(__('CUSTOMER DUE (বাকী পাওনা)'), '৳' . number_format($totalCustomerDue, 2))

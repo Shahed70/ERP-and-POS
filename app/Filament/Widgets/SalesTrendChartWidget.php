@@ -20,6 +20,31 @@ class SalesTrendChartWidget extends ChartWidget
 
     protected static ?string $maxHeight = '280px';
 
+    protected static string $view = 'filament.widgets.sales-trend-chart-widget';
+
+    public function getCategoryBreakdown(): array
+    {
+        $products = \App\Models\Product::with(['category', 'stockBalances'])->get();
+        $categories = \App\Models\ProductCategory::with('products.stockBalances')
+            ->where('is_active', true)
+            ->get();
+
+        $totalBagsAll = $products->sum('total_bags');
+
+        $breakdown = [];
+        foreach ($categories->take(4) as $cat) {
+            $catBags = $cat->products->sum('total_bags');
+            $share = $totalBagsAll > 0 ? round(($catBags / $totalBagsAll) * 100) : 0;
+            $breakdown[] = [
+                'name' => $cat->name,
+                'bags' => number_format($catBags),
+                'share' => $share,
+            ];
+        }
+
+        return $breakdown;
+    }
+
     protected function getData(): array
     {
         $labels = [];
@@ -37,17 +62,17 @@ class SalesTrendChartWidget extends ChartWidget
                     'label' => 'Feed Sales (৳ BDT)',
                     'data' => $data,
                     'backgroundColor' => [
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(14, 165, 233, 0.75)',
-                        'rgba(16, 185, 129, 0.85)', // Today in vibrant green
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(13, 148, 136, 0.75)',
+                        'rgba(16, 185, 129, 0.92)', // Today highlighted in vibrant green
                     ],
-                    'borderColor' => 'rgba(14, 165, 233, 1)',
+                    'borderColor' => 'rgba(13, 148, 136, 1)',
                     'borderWidth' => 1,
-                    'borderRadius' => 6,
+                    'borderRadius' => 8,
                 ],
             ],
             'labels' => $labels,

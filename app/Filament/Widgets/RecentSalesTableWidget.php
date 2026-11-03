@@ -20,20 +20,36 @@ class RecentSalesTableWidget extends BaseWidget
         return $table
             ->query(
                 Sale::query()
-                    ->with(['customer'])
+                    ->with(['customer', 'items.product'])
                     ->latest('id')
-                    ->limit(8)
+                    ->limit(10)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_no')
                     ->label(__('Invoice #'))
                     ->weight('bold')
+                    ->copyable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label(__('Customer / Gher (ক্রেতা)'))
                     ->description(fn (Sale $record): string => $record->customer->phone ?? '')
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('feed_items')
+                    ->label(__('Feed Items Dispatched (ফিড বিবরণ)'))
+                    ->state(function (Sale $record): string {
+                        $items = $record->items;
+                        if ($items->isEmpty()) {
+                            return '—';
+                        }
+                        return $items->map(fn ($item) => ($item->product?->name ?? 'Feed') . ' (' . (int) $item->quantity_bags . ' bags)')->take(2)->join(', ')
+                            . ($items->count() > 2 ? ' +' . ($items->count() - 2) . ' more' : '');
+                    })
+                    ->limit(42)
+                    ->tooltip(function (Sale $record): string {
+                        return $record->items->map(fn ($item) => ($item->product?->name ?? 'Feed') . ' (' . (int) $item->quantity_bags . ' bags)')->join("\n");
+                    }),
 
                 Tables\Columns\TextColumn::make('sale_date')
                     ->label(__('Date (তারিখ)'))
@@ -46,15 +62,26 @@ class RecentSalesTableWidget extends BaseWidget
                     ->weight('bold'),
 
                 Tables\Columns\TextColumn::make('paid_amount')
-                    ->label(__('Paid (নগদ পরিশোধ)'))
+                    ->label(__('Paid (নগদ)'))
                     ->money('BDT')
                     ->color('success'),
 
                 Tables\Columns\TextColumn::make('due_amount')
-                    ->label(__('Due (বকেয়া দেনা)'))
+                    ->label(__('Due (বকেয়া)'))
                     ->money('BDT')
                     ->color(fn (Sale $record): string => $record->due_amount > 0 ? 'danger' : 'gray')
                     ->weight(fn (Sale $record): string => $record->due_amount > 0 ? 'bold' : 'normal'),
+
+                Tables\Columns\TextColumn::make('payment_method')
+                    ->label(__('Method (মাধ্যম)'))
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => ucfirst($state ?? 'Cash'))
+                    ->color(fn (?string $state): string => match (strtolower($state ?? 'cash')) {
+                        'cash' => 'info',
+                        'bkash', 'nagad', 'rocket' => 'warning',
+                        'bank' => 'primary',
+                        default => 'gray',
+                    }),
 
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label(__('Status (অবস্থা)'))

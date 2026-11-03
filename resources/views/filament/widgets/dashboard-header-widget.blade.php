@@ -1,55 +1,88 @@
 <x-filament-widgets::widget>
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-primary-950 text-white rounded-2xl p-6 shadow-md border border-slate-700/60 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-        <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    {{ __('Live Store Hub') }}
-                </span>
-                <span class="text-xs text-slate-300 pl-4">
-                    {{ $dateFormatted }}
-                </span>
+    <div class="relative overflow-hidden rounded-3xl p-6 md:p-8 text-white shadow-xl border border-teal-500/20"
+         style="background: radial-gradient(circle at 15% 20%, rgba(20, 184, 166, 0.22) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.18) 0%, transparent 45%), linear-gradient(135deg, #06101e 0%, #0c1a2e 50%, #062b3b 100%);">
+
+        {{-- Subtle decorative grid overlay --}}
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+             style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {{-- Left Column: Store & User Greeting --}}
+            <div class="space-y-3">
+                {{-- Badges & Status Row --}}
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-sm shadow-emerald-500/10">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                        </span>
+                        {{ __('Live Hub Sync') }}
+                    </span>
+
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 text-teal-200 border border-teal-500/30 backdrop-blur-sm">
+                        <x-heroicon-m-building-storefront class="w-3.5 h-3.5 text-teal-400" />
+                        {{ __('Khulna Central Depot (রূপসা ঘাট)') }}
+                    </span>
+
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800/60 text-slate-300 border border-slate-700/60 backdrop-blur-sm">
+                        <x-heroicon-m-calendar-days class="w-3.5 h-3.5 text-slate-400" />
+                        {{ $dateFormatted }}
+                    </span>
+                </div>
+
+                {{-- Greeting & Role --}}
+                <div class="space-y-1">
+                    <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white flex flex-wrap items-center gap-2.5">
+                        <span>{{ __('স্বাগতম,') }} {{ $user?->name ?? __('User') }}</span>
+                        @if($isAdmin)
+                            <span class="inline-flex items-center gap-1 text-xs font-extrabold px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-sm shadow-amber-500/20 border border-amber-300">
+                                <x-heroicon-s-sparkles class="w-3.5 h-3.5 text-slate-950" />
+                                {{ __('Admin') }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-3 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
+                                <x-heroicon-m-eye class="w-3.5 h-3.5 text-sky-300" />
+                                {{ __('Viewer') }}
+                            </span>
+                        @endif
+                    </h1>
+
+                    <p class="text-sm text-slate-300/90 flex items-center gap-2 pt-0.5">
+                        <span class="font-extrabold text-teal-300 tracking-wide">{{ $shop->shop_name }}</span>
+                        <span class="text-slate-500">·</span>
+                        <span class="text-xs md:text-sm text-slate-300">{{ $shop->shop_tagline }}</span>
+                    </p>
+                </div>
             </div>
 
-            <h1 class="text-l md:text-3xl font-black tracking-tight text-white flex items-center gap-2 pt-2">
-                {{ __('স্বাগতম,') }} {{ $user?->name ?? __('User') }}
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-500/30 text-primary-200 border border-primary-400/40">
-                    {{ $isAdmin ? __('Admin') : __('Viewer') }}
-                </span>
-            </h1>
+            {{-- Right Column: Quick Action CTA Group --}}
+            <div class="flex flex-wrap items-center gap-2.5">
+                @if($isAdmin)
+                    <a href="/admin/sales/create"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                        <x-heroicon-m-plus-circle class="w-5 h-5 text-white" />
+                        <span>{{ __('+ New Sale (POS)') }}</span>
+                    </a>
 
-            <p class="text-sm text-slate-300 py-3">
-                <span class="font-bold text-primary-300">{{ $shop->shop_name }}</span> — {{ $shop->shop_tagline }}
-            </p>
-        </div>
+                    <a href="/admin/purchases/create"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                        <x-heroicon-m-truck class="w-4 h-4 text-teal-400" />
+                        <span>{{ __('+ Purchase (ক্রয়)') }}</span>
+                    </a>
 
-        <!-- Quick Action Buttons -->
-        <div class="flex flex-wrap items-center gap-3" style="margin-top: -30px">
-            @if($isAdmin)
-                <a href="/admin/sales/create"
-                   class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm bg-primary-500 hover:bg-primary-600 text-white shadow-sm transition hover:scale-102">
-                    <x-heroicon-m-plus-circle class="w-5 h-5" />
-                    {{ __('+ New Sale (POS)') }}
+                    <a href="/admin/payment-collections/create"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-emerald-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                        <x-heroicon-m-banknotes class="w-4 h-4 text-emerald-400" />
+                        <span>{{ __('Collect Due (আদায়)') }}</span>
+                    </a>
+                @endif
+
+                <a href="/admin/executive-summary-report"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-teal-950/40 hover:bg-teal-900/50 text-teal-200 border border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                    <x-heroicon-m-presentation-chart-line class="w-4 h-4 text-cyan-400" />
+                    <span>{{ __('Executive P&L') }}</span>
                 </a>
-
-                <a href="/admin/purchases/create"
-                   class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl font-semibold text-sm bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 transition">
-                    <x-heroicon-m-truck class="w-4 h-4 text-amber-400" />
-                    {{ __('+ Purchase (ক্রয়)') }}
-                </a>
-
-                <a href="/admin/payment-collections/create"
-                   class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl font-semibold text-sm bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 transition">
-                    <x-heroicon-m-banknotes class="w-4 h-4 text-emerald-400" />
-                    {{ __('Collect Due (আদায়)') }}
-                </a>
-            @endif
-
-            <a href="/admin/executive-summary-report"
-               class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl font-semibold text-sm bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-600 transition">
-                <x-heroicon-m-presentation-chart-line class="w-4 h-4 text-sky-400" />
-                {{ __('Executive P&L') }}
-            </a>
+            </div>
         </div>
     </div>
 </x-filament-widgets::widget>

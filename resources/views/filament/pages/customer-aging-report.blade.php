@@ -10,39 +10,39 @@
 
     <!-- Aging Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-gray-500 uppercase">{{ __('Total Outstanding Due') }}</div>
-            <div class="text-2xl font-black text-rose-600 mt-1">৳{{ number_format($totalDue, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ $customers->count() }} {{ __('customers with debt') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ __('Total Outstanding Due') }}</div>
+            <div class="text-2xl font-black text-rose-600 mt-1.5">৳{{ number_format($totalDue, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ $customers->count() }} {{ __('customers with debt') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-emerald-600 uppercase">{{ __('0 — 30 Days (চলতি)') }}</div>
-            <div class="text-2xl font-black text-emerald-600 mt-1">৳{{ number_format($total0to30, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Current harvest cycle') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider">{{ __('0 — 30 Days (চলতি)') }}</div>
+            <div class="text-2xl font-black text-emerald-600 mt-1.5">৳{{ number_format($total0to30, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Current harvest cycle') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-sky-600 uppercase">{{ __('31 — 60 Days (১-২ মাস)') }}</div>
-            <div class="text-2xl font-black text-sky-600 mt-1">৳{{ number_format($total31to60, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('Medium risk') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-sky-600 uppercase tracking-wider">{{ __('31 — 60 Days (১-২ মাস)') }}</div>
+            <div class="text-2xl font-black text-sky-600 mt-1.5">৳{{ number_format($total31to60, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('Medium risk') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-amber-600 uppercase">{{ __('61 — 90 Days (২-৩ মাস)') }}</div>
-            <div class="text-2xl font-black text-amber-600 mt-1">৳{{ number_format($total61to90, 2) }}</div>
-            <div class="text-xs text-gray-400 mt-1">{{ __('High risk aging') }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-amber-600 uppercase tracking-wider">{{ __('61 — 90 Days (২-৩ মাস)') }}</div>
+            <div class="text-2xl font-black text-amber-600 mt-1.5">৳{{ number_format($total61to90, 2) }}</div>
+            <div class="text-xs text-slate-400 mt-1">{{ __('High risk aging') }}</div>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm">
-            <div class="text-xs font-semibold text-rose-700 uppercase">{{ __('> 90 Days (৩ মাসের বেশি)') }}</div>
-            <div class="text-2xl font-black text-rose-700 mt-1">৳{{ number_format($totalOver90, 2) }}</div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="text-xs font-bold text-rose-700 uppercase tracking-wider">{{ __('> 90 Days (৩ মাসের বেশি)') }}</div>
+            <div class="text-2xl font-black text-rose-700 mt-1.5">৳{{ number_format($totalOver90, 2) }}</div>
             <div class="text-xs text-rose-500 font-semibold mt-1">{{ __('Urgent collection needed') }}</div>
         </div>
     </div>
 
     <!-- Aging Analysis Table -->
-    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm border-collapse">
                 <thead>

@@ -19,9 +19,9 @@
         .pnl-filter-box {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             padding: 1.25rem 1.5rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03);
         }
         .dark .pnl-filter-box {
             background-color: #0f172a;
@@ -32,7 +32,7 @@
         .pnl-kpi-grid {
             display: grid;
             grid-template-columns: repeat(1, minmax(0, 1fr));
-            gap: 1rem;
+            gap: 1.15rem;
         }
         @media (min-width: 640px) {
             .pnl-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -44,17 +44,27 @@
         .pnl-kpi-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            border-radius: 1.25rem;
+            padding: 1.35rem;
+            box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pnl-kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.08);
+            border-color: #cbd5e1;
         }
         .dark .pnl-kpi-card {
             background-color: #0f172a;
             border-color: #1e293b;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.3);
+        }
+        .dark .pnl-kpi-card:hover {
+            box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.5);
+            border-color: #334155;
         }
 
         .pnl-kpi-label {
@@ -109,12 +119,12 @@
             border: 1px solid #e2e8f0;
             border-radius: 1.25rem;
             padding: 1.75rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
         }
         .dark .pnl-panel {
             background-color: #0f172a;
             border-color: #1e293b;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.35);
         }
 
         .pnl-panel-header {
