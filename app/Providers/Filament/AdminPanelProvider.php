@@ -37,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
                 'shop' => \App\Models\ShopSetting::getSettings(),
             ]))
             ->brandLogoHeight('2.75rem')
+            ->favicon(fn () => \App\Models\ShopSetting::getSettings()->getLogoUrl() ?? asset('favicon.svg'))
             ->sidebarCollapsibleOnDesktop()
             ->collapsibleNavigationGroups()
             ->font('Plus Jakarta Sans')

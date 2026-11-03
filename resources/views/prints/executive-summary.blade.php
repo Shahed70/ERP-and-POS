@@ -7,6 +7,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive Summary & P&L Statement - {{ $data['period']['formatted'] }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ $settings->getLogoUrl() ?? asset('favicon.svg') }}">
+    <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <style>
         * {
             box-sizing: border-box;
