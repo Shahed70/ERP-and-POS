@@ -409,6 +409,225 @@
     .mb-2\.5 { margin-bottom: 0.625rem !important; }
 
     /* ==========================================================================
+       DARK MODE COLOR COMPATIBILITY (Slate & Utility Fallbacks)
+       ========================================================================== */
+    .dark .dark\:bg-slate-900,
+    .dark .dark\:bg-slate-900\/40,
+    .dark .dark\:bg-slate-900\/50,
+    .dark .dark\:bg-slate-900\/60,
+    .dark .dark\:bg-slate-900\/70 {
+        background-color: #0f172a !important;
+    }
+    .dark .dark\:bg-slate-950,
+    .dark .dark\:bg-slate-950\/50,
+    .dark .dark\:bg-slate-950\/60 {
+        background-color: #020617 !important;
+    }
+    .dark .dark\:bg-slate-800,
+    .dark .dark\:bg-slate-800\/40,
+    .dark .dark\:bg-slate-800\/50,
+    .dark .dark\:bg-slate-800\/60,
+    .dark .dark\:bg-slate-800\/80 {
+        background-color: #1e293b !important;
+    }
+    .dark .dark\:border-slate-800,
+    .dark .dark\:border-slate-800\/60,
+    .dark .dark\:border-slate-800\/80,
+    .dark .dark\:border-slate-800\/90 {
+        border-color: #1e293b !important;
+    }
+    .dark .dark\:border-slate-700,
+    .dark .dark\:border-slate-700\/60,
+    .dark .dark\:border-slate-700\/80 {
+        border-color: #334155 !important;
+    }
+    .dark .dark\:text-white {
+        color: #ffffff !important;
+    }
+    .dark .dark\:text-slate-100 {
+        color: #f1f5f9 !important;
+    }
+    .dark .dark\:text-slate-200 {
+        color: #e2e8f0 !important;
+    }
+    .dark .dark\:text-slate-300 {
+        color: #cbd5e1 !important;
+    }
+    .dark .dark\:text-slate-400 {
+        color: #94a3b8 !important;
+    }
+    .dark .dark\:text-slate-500 {
+        color: #64748b !important;
+    }
+    .dark .dark\:hover\:bg-gray-800\/30:hover {
+        background-color: rgba(30, 41, 59, 0.4) !important;
+    }
+    .dark .dark\:bg-gray-800\/60 {
+        background-color: rgba(30, 41, 59, 0.7) !important;
+    }
+    .dark .dark\:border-gray-700 {
+        border-color: #334155 !important;
+    }
+    .dark .dark\:divide-gray-800 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #1e293b !important;
+    }
+
+    /* ==========================================================================
+       REPORT PAGES MODERN FINTECH STYLING SUITE
+       ========================================================================== */
+    .rpt-filter-card {
+        background: #ffffff !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        border-radius: 1.25rem !important;
+        padding: 1.35rem 1.6rem !important;
+        box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03) !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .dark .rpt-filter-card {
+        background: #0f172a !important;
+        border-color: rgba(51, 65, 85, 0.85) !important;
+        box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .rpt-kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        gap: 1.15rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    @media (min-width: 640px) {
+        .rpt-kpi-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
+    @media (min-width: 1024px) {
+        .rpt-kpi-grid-5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        }
+        .rpt-kpi-grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+    }
+
+    .rpt-kpi-card {
+        background: #ffffff !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        border-radius: 1.25rem !important;
+        padding: 1.35rem 1.5rem !important;
+        box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.03) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: 112px !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .dark .rpt-kpi-card {
+        background: #0f172a !important;
+        border-color: rgba(51, 65, 85, 0.85) !important;
+        box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35) !important;
+    }
+    .rpt-kpi-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08) !important;
+    }
+    .dark .rpt-kpi-card:hover {
+        box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(20, 184, 166, 0.45) !important;
+    }
+
+    .rpt-kpi-title {
+        font-size: 0.725rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        line-height: 1.4 !important;
+        color: #64748b !important;
+        margin-bottom: 0.4rem !important;
+    }
+    .dark .rpt-kpi-title {
+        color: #94a3b8 !important;
+    }
+
+    .rpt-kpi-val {
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        line-height: 1.15 !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    .rpt-kpi-sub {
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        color: #94a3b8 !important;
+        line-height: 1.4 !important;
+    }
+    .dark .rpt-kpi-sub {
+        color: #64748b !important;
+    }
+
+    .rpt-table-card {
+        background: #ffffff !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        border-radius: 1.25rem !important;
+        box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.03) !important;
+        overflow: hidden !important;
+    }
+    .dark .rpt-table-card {
+        background: #0f172a !important;
+        border-color: rgba(51, 65, 85, 0.85) !important;
+        box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .rpt-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        text-align: left !important;
+        font-size: 0.875rem !important;
+    }
+    .rpt-table thead tr {
+        background: rgba(248, 250, 252, 0.9) !important;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.9) !important;
+    }
+    .dark .rpt-table thead tr {
+        background: rgba(30, 41, 59, 0.7) !important;
+        border-bottom-color: rgba(51, 65, 85, 0.85) !important;
+    }
+    .rpt-table th {
+        padding: 0.95rem 1.15rem !important;
+        font-size: 0.725rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        text-transform: uppercase !important;
+        color: #475569 !important;
+    }
+    .dark .rpt-table th {
+        color: #94a3b8 !important;
+    }
+
+    .rpt-table tbody tr {
+        border-bottom: 1px solid rgba(241, 245, 249, 0.9) !important;
+        transition: background-color 0.15s ease !important;
+    }
+    .dark .rpt-table tbody tr {
+        border-bottom-color: rgba(30, 41, 59, 0.6) !important;
+    }
+    .rpt-table tbody tr:hover {
+        background-color: rgba(240, 253, 250, 0.5) !important;
+    }
+    .dark .rpt-table tbody tr:hover {
+        background-color: rgba(19, 78, 74, 0.18) !important;
+    }
+
+    .rpt-table td {
+        padding: 0.95rem 1.15rem !important;
+        color: #1e293b !important;
+    }
+    .dark .rpt-table td {
+        color: #e2e8f0 !important;
+    }
+
+    /* ==========================================================================
        TABLES (Clean Fintech Rows & Micro-Typography)
        ========================================================================== */
     .fi-ta-ctn {
