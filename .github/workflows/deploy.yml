@@ -1,0 +1,92 @@
+name: CI / CD Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # =========================================================================
+  # 1. Continuous Integration (CI): Lint, Validate & Run Test Suite
+  # =========================================================================
+  test:
+    name: Run Automated Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, fileinfo
+          coverage: none
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Copy Environment & Generate App Key
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run Test Suite
+        run: php artisan test
+
+  # =========================================================================
+  # 2. Continuous Deployment (CD): Deploy to cPanel via SSH
+  # =========================================================================
+  deploy:
+    name: Deploy to cPanel Server
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute Remote SSH Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            # 1. Navigate to project directory
+            cd ~/erp-and-pos
+
+            # 2. Put application into quick maintenance mode
+            php artisan down --render="errors::503" || true
+
+            # 3. Pull latest code from GitHub main branch
+            git fetch origin main
+            git reset --hard origin/main
+
+            # 4. Install production dependencies
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            # 5. Run database migrations safely
+            php artisan migrate --force
+
+            # 6. Optimize and cache for high production performance
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan filament:cache-components
+            php artisan storage:link || true
+
+            # 7. Bring application back online
+            php artisan up
