@@ -2,6 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+<script src="/js/offline-sync-engine.js" defer></script>
 
 <style>
     /* ==========================================================================
@@ -715,5 +716,36 @@
     }
     .dark .fi-modal-window {
         border-color: rgba(30, 41, 59, 0.7) !important;
+    }
+
+    /* Offline Sync Toast Notifications */
+    .aquafeed-sync-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99999;
+        background: #0f172a;
+        color: #ffffff;
+        padding: 12px 18px;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }
+    .aquafeed-sync-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .aquafeed-sync-toast.success {
+        border-left: 4px solid #10b981;
+    }
+    .aquafeed-sync-toast.warning {
+        border-left: 4px solid #f59e0b;
+    }
+    .aquafeed-sync-toast.info {
+        border-left: 4px solid #06b6d4;
     }
 </style>
