@@ -96,104 +96,31 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           script: |
-            # 1. Environment & PATH setup (including cPanel composer paths)
             export PATH="/opt/cpanel/composer/bin:/usr/local/bin:/usr/bin:$HOME/bin:$PATH"
-
-            # 2. Locate project directory (from secret or intelligent auto-detection)
             TARGET_DIR="${{ secrets.SSH_PROJECT_PATH }}"
-
-            if [ -n "$TARGET_DIR" ] && [ -d "$TARGET_DIR" ]; then
-                echo "Using configured project directory: $TARGET_DIR"
-            else
-                for candidate in \
-                    "$HOME/erp-and-pos" \
-                    "$HOME/ERP-and-POS" \
-                    "$HOME/erpandpos.thebrandoutletbd.com" \
-                    "$HOME/public_html/erpandpos.thebrandoutletbd.com" \
-                    "$HOME/public_html/erpandpos" \
-                    "$HOME/public_html/erp" \
-                    "$HOME/public_html"; do
-                    if [ -d "$candidate" ] && ([ -f "$candidate/artisan" ] || [ -d "$candidate/.git" ]); then
-                        TARGET_DIR="$candidate"
-                        echo "Discovered project at: $TARGET_DIR"
-                        break
-                    fi
-                done
-            fi
-
-            if [ -z "$TARGET_DIR" ] || [ ! -d "$TARGET_DIR" ]; then
-                FOUND=$(find "$HOME" -maxdepth 3 -name "artisan" -type f 2>/dev/null | head -n 1)
-                if [ -n "$FOUND" ]; then
-                    TARGET_DIR=$(dirname "$FOUND")
-                    echo "Found artisan file at: $FOUND -> using $TARGET_DIR"
-                fi
-            fi
-
-            if [ -z "$TARGET_DIR" ] || [ ! -d "$TARGET_DIR" ]; then
-                echo "::error::Could not find project directory on the server."
-                echo "Existing directories in \$HOME:"
-                ls -la "$HOME"
-                exit 1
-            fi
-
+            [ -z "$TARGET_DIR" ] && [ -d "$HOME/erpandpos.thebrandoutletbd.com" ] && TARGET_DIR="$HOME/erpandpos.thebrandoutletbd.com"
+            [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos.thebrandoutletbd.com" ] && TARGET_DIR="$HOME/public_html/erpandpos.thebrandoutletbd.com"
+            [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos" ] && TARGET_DIR="$HOME/public_html/erpandpos"
+            [ -z "$TARGET_DIR" ] && [ -d "$HOME/erp-and-pos" ] && TARGET_DIR="$HOME/erp-and-pos"
+            [ -z "$TARGET_DIR" ] && [ -d "$HOME/ERP-and-POS" ] && TARGET_DIR="$HOME/ERP-and-POS"
+            [ -z "$TARGET_DIR" ] && TARGET_DIR=$(find "$HOME" -maxdepth 3 -name "artisan" -type f 2>/dev/null | head -n 1 | xargs -r dirname)
+            echo "Deploying to target directory: $TARGET_DIR"
             cd "$TARGET_DIR"
             echo "Current working directory: $(pwd)"
-
-            # 3. Detect or download Composer binary
-            if command -v composer >/dev/null 2>&1; then
-                COMPOSER_CMD="composer"
-            elif [ -f "$HOME/composer.phar" ]; then
-                COMPOSER_CMD="php $HOME/composer.phar"
-            elif [ -f "$HOME/bin/composer" ]; then
-                COMPOSER_CMD="$HOME/bin/composer"
-            elif [ -f "composer.phar" ]; then
-                COMPOSER_CMD="php composer.phar"
-            else
-                echo "Composer not found in PATH, downloading composer.phar..."
-                php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-                php composer-setup.php --quiet
-                php -r "unlink('composer-setup.php');"
-                COMPOSER_CMD="php composer.phar"
-            fi
+            COMPOSER_CMD="composer"
+            command -v composer >/dev/null 2>&1 || if [ -f "$HOME/composer.phar" ]; then COMPOSER_CMD="php $HOME/composer.phar"; elif [ -f "$HOME/bin/composer" ]; then COMPOSER_CMD="$HOME/bin/composer"; elif [ -f "composer.phar" ]; then COMPOSER_CMD="php composer.phar"; fi
             echo "Using Composer command: $COMPOSER_CMD"
-
-            # 4. Put application into quick maintenance mode if artisan is present
-            if [ -f artisan ]; then
-                php artisan down || true
-            fi
-
-            # 5. Pull latest code from GitHub main branch
-            if [ -d .git ]; then
-                git fetch origin main
-                git reset --hard origin/main
-            fi
-
-            # 6. Ensure APP_KEY exists in .env
-            if [ -f .env ]; then
-                if ! grep -q "^APP_KEY=base64:" .env; then
-                    echo "Generating missing APP_KEY in .env..."
-                    php artisan key:generate --force
-                fi
-            elif [ -f .env.example ]; then
-                echo ".env not found. Copying from .env.example and generating key..."
-                cp .env.example .env
-                php artisan key:generate --force
-            fi
-
-            # 7. Install production dependencies
+            php artisan down || true
+            [ -d .git ] && git fetch origin main && git reset --hard origin/main
+            [ -f .env ] || cp .env.example .env
+            grep -q "^APP_KEY=base64:" .env || php artisan key:generate --force
             $COMPOSER_CMD install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
-            # 8. Run database migrations safely
             php artisan migrate --force
-
-            # 9. Optimize and cache for high production performance
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             php artisan filament:cache-components
             php artisan storage:link || true
-
-            # 10. Bring application back online
             php artisan up
-            echo "Deployment completed successfully!"
+            echo "Deployment successfully finished!"
