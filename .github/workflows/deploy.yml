@@ -14,6 +14,16 @@ jobs:
     name: Run Automated Tests
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          MYSQL_DATABASE: fish_feed_shop
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -22,7 +32,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, fileinfo, zip, curl
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, bcmath, fileinfo, zip, curl
           coverage: none
 
       - name: Cache Composer Dependencies
@@ -41,6 +51,9 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      - name: Migrate Database
+        run: php artisan migrate --force
+
       - name: Run Test Suite
         run: php artisan test
 
@@ -54,7 +67,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Validate SSH Configuration
+        id: check_ssh
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ] || [ -z "${{ secrets.SSH_USERNAME }}" ]; then
+            echo "configured=false" >> $GITHUB_OUTPUT
+            echo "::notice::cPanel SSH Secrets (SSH_HOST, SSH_USERNAME, SSH_KEY) are not yet configured in GitHub Secrets. Tests passed! Add secrets to enable automatic server deployment."
+          else
+            echo "configured=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Execute Remote SSH Commands
+        if: steps.check_ssh.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
