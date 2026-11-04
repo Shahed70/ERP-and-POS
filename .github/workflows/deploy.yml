@@ -97,23 +97,26 @@ jobs:
           script_stop: true
           script: |
             export PATH="/opt/cpanel/composer/bin:/usr/local/bin:/usr/bin:$HOME/bin:$PATH"
+            echo "Connected as user: $(whoami) at $(pwd)"
             TARGET_DIR="${{ secrets.SSH_PROJECT_PATH }}"
-            [ -z "$TARGET_DIR" ] && [ -d "$HOME/erpandpos.thebrandoutletbd.com" ] && TARGET_DIR="$HOME/erpandpos.thebrandoutletbd.com"
-            [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos.thebrandoutletbd.com" ] && TARGET_DIR="$HOME/public_html/erpandpos.thebrandoutletbd.com"
-            [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos" ] && TARGET_DIR="$HOME/public_html/erpandpos"
-            [ -z "$TARGET_DIR" ] && [ -d "$HOME/erp-and-pos" ] && TARGET_DIR="$HOME/erp-and-pos"
-            [ -z "$TARGET_DIR" ] && [ -d "$HOME/ERP-and-POS" ] && TARGET_DIR="$HOME/ERP-and-POS"
-            [ -z "$TARGET_DIR" ] && TARGET_DIR=$(find "$HOME" -maxdepth 3 -name "artisan" -type f 2>/dev/null | head -n 1 | xargs -r dirname)
-            echo "Deploying to target directory: $TARGET_DIR"
+            if [ -z "$TARGET_DIR" ] && [ -d "$HOME/erpandpos.thebrandoutletbd.com" ]; then TARGET_DIR="$HOME/erpandpos.thebrandoutletbd.com"; fi
+            if [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos.thebrandoutletbd.com" ]; then TARGET_DIR="$HOME/public_html/erpandpos.thebrandoutletbd.com"; fi
+            if [ -z "$TARGET_DIR" ] && [ -d "$HOME/public_html/erpandpos" ]; then TARGET_DIR="$HOME/public_html/erpandpos"; fi
+            if [ -z "$TARGET_DIR" ] && [ -d "$HOME/erp-and-pos" ]; then TARGET_DIR="$HOME/erp-and-pos"; fi
+            if [ -z "$TARGET_DIR" ] && [ -d "$HOME/ERP-and-POS" ]; then TARGET_DIR="$HOME/ERP-and-POS"; fi
+            if [ -z "$TARGET_DIR" ] && [ -f "$HOME/public_html/artisan" ]; then TARGET_DIR="$HOME/public_html"; fi
+            if [ -z "$TARGET_DIR" ]; then TARGET_DIR=$(find "$HOME" -maxdepth 3 -name "artisan" -type f 2>/dev/null | head -n 1 | xargs -r dirname); fi
+            echo "Target project directory: $TARGET_DIR"
+            if [ -z "$TARGET_DIR" ] || [ ! -d "$TARGET_DIR" ]; then echo "Could not find project directory. Set SSH_PROJECT_PATH secret."; ls -la "$HOME"; exit 1; fi
             cd "$TARGET_DIR"
-            echo "Current working directory: $(pwd)"
+            echo "Current directory: $(pwd)"
             COMPOSER_CMD="composer"
-            command -v composer >/dev/null 2>&1 || if [ -f "$HOME/composer.phar" ]; then COMPOSER_CMD="php $HOME/composer.phar"; elif [ -f "$HOME/bin/composer" ]; then COMPOSER_CMD="$HOME/bin/composer"; elif [ -f "composer.phar" ]; then COMPOSER_CMD="php composer.phar"; fi
+            if ! command -v composer >/dev/null 2>&1; then if [ -f "$HOME/composer.phar" ]; then COMPOSER_CMD="php $HOME/composer.phar"; elif [ -f "$HOME/bin/composer" ]; then COMPOSER_CMD="$HOME/bin/composer"; elif [ -f "composer.phar" ]; then COMPOSER_CMD="php composer.phar"; fi; fi
             echo "Using Composer command: $COMPOSER_CMD"
             php artisan down || true
-            [ -d .git ] && git fetch origin main && git reset --hard origin/main
-            [ -f .env ] || cp .env.example .env
-            grep -q "^APP_KEY=base64:" .env || php artisan key:generate --force
+            if [ -d .git ]; then git fetch origin main && git reset --hard origin/main; fi
+            if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env; fi
+            if ! grep -q "^APP_KEY=base64:" .env; then php artisan key:generate --force; fi
             $COMPOSER_CMD install --no-dev --no-interaction --prefer-dist --optimize-autoloader
             php artisan migrate --force
             php artisan optimize:clear
