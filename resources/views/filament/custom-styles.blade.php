@@ -750,4 +750,51 @@
     .aquafeed-sync-toast.info {
         border-left: 4px solid #06b6d4;
     }
+
+    /* ==========================================================================
+       MOBILE RESPONSIVE FULL-WIDTH ENHANCEMENTS (< 768px)
+       ========================================================================== */
+    @media (max-width: 768px) {
+        /* 1. Dashboard Widget Container: single full-width column with compact gap */
+        .fi-widgets-grid,
+        .fi-page-body > .grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+
+        /* 2. Stats Overview Cards: 100% Full-Width column stack */
+        .fi-wi-stats-overview {
+            gap: 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .fi-wi-stats-overview-stats-ctn {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+            width: 100% !important;
+        }
+
+        .fi-wi-stats-overview-stat {
+            width: 100% !important;
+            padding: 1.15rem 1.25rem !important;
+            margin: 0 !important;
+        }
+
+        .fi-wi-stats-overview-stat-value {
+            font-size: 1.5rem !important;
+        }
+
+        /* 3. Feed Category Breakdown Cards */
+        .feed-category-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.75rem !important;
+        }
+
+        /* 4. Page body padding adjustment for edge-to-edge breathing room */
+        .fi-page-body {
+            padding-left: 0.25rem !important;
+            padding-right: 0.25rem !important;
+        }
+    }
 </style>

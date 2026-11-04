@@ -24,6 +24,12 @@ class Dashboard extends BaseDashboard
 
     public function getColumns(): int | string | array
     {
-        return 12;
+        return [
+            'default' => 1,
+            'sm' => 1,
+            'md' => 12,
+            'lg' => 12,
+            'xl' => 12,
+        ];
     }
 }

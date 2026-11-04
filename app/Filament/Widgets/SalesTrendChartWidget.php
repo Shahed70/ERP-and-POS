@@ -14,7 +14,7 @@ class SalesTrendChartWidget extends ChartWidget
     protected static ?int $sort = 3;
 
     protected int | string | array $columnSpan = [
-        'default' => 12,
+        'default' => 'full',
         'lg' => 7,
     ];
 
