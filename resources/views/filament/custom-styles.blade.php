@@ -750,21 +750,4 @@
     .aquafeed-sync-toast.info {
         border-left: 4px solid #06b6d4;
     }
-
-    /* Responsive Dashboard Typography & Cards for Mobile & Tablet */
-    @media (max-width: 768px) {
-        .fi-header-heading {
-            font-size: 1.35rem !important;
-            line-height: 1.85rem !important;
-            word-break: break-word !important;
-        }
-        .fi-header-subheading {
-            font-size: 0.8125rem !important;
-            line-height: 1.35rem !important;
-            word-break: break-word !important;
-        }
-        .fi-wi-stats-overview-stat {
-            padding: 1rem !important;
-        }
-    }
 </style>

@@ -1,13 +1,13 @@
 <x-filament-widgets::widget>
-    <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-xl border border-teal-500/20"
+    <div class="relative overflow-hidden rounded-3xl p-5 sm:p-6 md:p-8 text-white shadow-xl border border-teal-500/20"
          style="background: radial-gradient(circle at 15% 20%, rgba(20, 184, 166, 0.22) 0%, transparent 45%), radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.18) 0%, transparent 45%), linear-gradient(135deg, #06101e 0%, #0c1a2e 50%, #062b3b 100%);">
 
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {{-- Left Column: Store & User Greeting --}}
-            <div class="space-y-3.5 max-w-full min-w-0">
+            <div class="space-y-3">
                 {{-- Badges & Status Row --}}
-                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-sm shadow-emerald-500/10 shrink-0">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-sm shadow-emerald-500/10 shrink-0">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
@@ -15,93 +15,78 @@
                         {{ __('Live Hub Sync') }}
                     </span>
 
-                    <span class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-slate-800/80 text-teal-200 border border-teal-500/30 backdrop-blur-sm max-w-full">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 text-teal-200 border border-teal-500/30 backdrop-blur-sm">
                         <x-heroicon-m-building-storefront class="w-3.5 h-3.5 text-teal-400 shrink-0" />
-                        <span class="truncate">{{ __('Khulna Central Depot (রূপসা ঘাট)') }}</span>
+                        <span>{{ __('Khulna Central Depot (রূপসা ঘাট)') }}</span>
                     </span>
 
-                    <span class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-slate-800/60 text-slate-300 border border-slate-700/60 backdrop-blur-sm shrink-0">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800/60 text-slate-300 border border-slate-700/60 backdrop-blur-sm shrink-0">
                         <x-heroicon-m-calendar-days class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span>{{ $dateFormatted }}</span>
                     </span>
                 </div>
 
                 {{-- Greeting & Role --}}
-                <div class="space-y-2">
-                    <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white flex flex-wrap items-center gap-2 sm:gap-2.5 leading-snug">
-                        <span class="break-words">{{ __('স্বাগতম,') }} {{ $user?->name ?? __('User') }}</span>
+                <div class="space-y-1">
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white flex flex-wrap items-center gap-2.5">
+                        <span>{{ __('স্বাগতম,') }} {{ $user?->name ?? __('User') }}</span>
                         @if($isAdmin)
-                            <span class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-extrabold px-2.5 sm:px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-sm shadow-amber-500/20 border border-amber-300 shrink-0">
-                                <x-heroicon-s-sparkles class="w-3.5 h-3.5 text-slate-950 shrink-0" />
-                                <span>{{ __('Admin') }}</span>
+                            <span class="inline-flex items-center gap-1 text-xs font-extrabold px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-sm shadow-amber-500/20 border border-amber-300 shrink-0">
+                                <x-heroicon-s-sparkles class="w-3.5 h-3.5 text-slate-950" />
+                                {{ __('Admin') }}
                             </span>
                         @else
-                            <span class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30 shrink-0">
-                                <x-heroicon-m-eye class="w-3.5 h-3.5 text-sky-300 shrink-0" />
-                                <span>{{ __('Viewer') }}</span>
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-3 py-0.5 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30 shrink-0">
+                                <x-heroicon-m-eye class="w-3.5 h-3.5 text-sky-300" />
+                                {{ __('Viewer') }}
                             </span>
                         @endif
                     </h1>
 
-                    {{-- Uploaded Store Identity (Logo, Name, Tagline) --}}
-                    <div class="inline-flex items-start sm:items-center gap-3 p-2 sm:px-3.5 sm:py-2 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md max-w-full">
+                    {{-- Uploaded Store Branding (Logo, Name, Tagline) --}}
+                    <div class="flex items-center gap-3 pt-1">
                         @if($shop->getLogoUrl())
-                            <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-white/15 p-1 border border-white/20 shrink-0 flex items-center justify-center overflow-hidden shadow-sm">
-                                <img src="{{ $shop->getLogoUrl() }}" alt="{{ $shop->shop_name }}" class="h-full w-full object-contain">
-                            </div>
-                        @else
-                            <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-teal-500/20 p-1 border border-teal-400/30 shrink-0 flex items-center justify-center shadow-sm">
-                                <x-heroicon-m-building-storefront class="w-5 h-5 sm:w-6 sm:h-6 text-teal-300" />
-                            </div>
+                            <img src="{{ $shop->getLogoUrl() }}" alt="{{ $shop->shop_name }}" class="h-8 w-auto max-w-[65px] sm:max-w-[75px] object-contain rounded bg-white/10 p-0.5 border border-white/20 shrink-0">
                         @endif
-
-                        <div class="flex flex-col min-w-0 pr-1">
-                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                                <span class="font-extrabold text-sm sm:text-base text-teal-300 tracking-wide break-words">
-                                    {{ $shop->shop_name }}
-                                </span>
-                                @if($shop->proprietor_name)
-                                    <span class="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-md bg-teal-950/60 text-teal-200 border border-teal-500/30 hidden xs:inline-block shrink-0">
-                                        {{ $shop->proprietor_name }}
-                                    </span>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-x-2">
+                                <span class="font-extrabold text-teal-300 tracking-wide text-sm sm:text-base">{{ $shop->shop_name }}</span>
+                                @if($shop->shop_tagline)
+                                    <span class="text-slate-500 hidden md:inline">·</span>
+                                    <span class="text-xs sm:text-sm text-slate-300 block md:inline">{{ $shop->shop_tagline }}</span>
                                 @endif
                             </div>
-                            @if($shop->shop_tagline)
-                                <p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed break-words mt-0.5">
-                                    {{ $shop->shop_tagline }}
-                                </p>
-                            @endif
                         </div>
                     </div>
                 </div>
             </div>
 
             {{-- Right Column: Quick Action CTA Group --}}
-            <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto shrink-0">
+            <div class="flex flex-wrap items-center gap-2.5">
                 @if($isAdmin)
                     <a href="/admin/sales/create"
-                       class="col-span-2 sm:col-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
-                        <x-heroicon-m-plus-circle class="w-4 h-4 sm:w-5 sm:h-5 text-white shrink-0" />
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                        <x-heroicon-m-plus-circle class="w-5 h-5 text-white" />
                         <span>{{ __('+ New Sale (POS)') }}</span>
                     </a>
 
                     <a href="/admin/purchases/create"
-                       class="col-span-1 sm:col-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl sm:rounded-2xl font-semibold text-xs sm:text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
-                        <x-heroicon-m-truck class="w-4 h-4 text-teal-400 shrink-0" />
-                        <span class="truncate">{{ __('+ Purchase (ক্রয়)') }}</span>
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                        <x-heroicon-m-truck class="w-4 h-4 text-teal-400" />
+                        <span>{{ __('+ Purchase (ক্রয়)') }}</span>
                     </a>
 
                     <a href="/admin/payment-collections/create"
-                       class="col-span-1 sm:col-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl sm:rounded-2xl font-semibold text-xs sm:text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-emerald-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
-                        <x-heroicon-m-banknotes class="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span class="truncate">{{ __('Collect Due (আদায়)') }}</span>
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-slate-900/80 hover:bg-slate-800 text-slate-100 border border-slate-700/80 hover:border-emerald-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                        <x-heroicon-m-banknotes class="w-4 h-4 text-emerald-400" />
+                        <span>{{ __('Collect Due (আদায়)') }}</span>
                     </a>
                 @endif
 
                 <a href="/admin/executive-summary-report"
-                   class="col-span-2 sm:col-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl sm:rounded-2xl font-semibold text-xs sm:text-sm bg-teal-950/40 hover:bg-teal-900/50 text-teal-200 border border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
-                    <x-heroicon-m-presentation-chart-line class="w-4 h-4 text-cyan-400 shrink-0" />
-                    <span class="truncate">{{ __('Executive P&L') }}</span>
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl font-semibold text-sm bg-teal-950/40 hover:bg-teal-900/50 text-teal-200 border border-teal-500/40 backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-[1.02]">
+                    <x-heroicon-m-presentation-chart-line class="w-4 h-4 text-cyan-400" />
+                    <span>{{ __('Executive P&L') }}</span>
                 </a>
             </div>
         </div>
