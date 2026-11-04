@@ -21,8 +21,8 @@ jobs:
       - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, fileinfo
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, bcmath, fileinfo, zip, curl
           coverage: none
 
       - name: Cache Composer Dependencies
@@ -64,23 +64,33 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script_stop: true
           script: |
-            # 1. Navigate to project directory
+            # 1. Detect Composer binary (global or ~/composer.phar)
+            export PATH="/usr/local/bin:/usr/bin:$HOME/bin:$PATH"
+            if command -v composer >/dev/null 2>&1; then
+                COMPOSER_CMD="composer"
+            elif [ -f "$HOME/composer.phar" ]; then
+                COMPOSER_CMD="php $HOME/composer.phar"
+            else
+                COMPOSER_CMD="php composer.phar"
+            fi
+
+            # 2. Navigate to project directory
             cd ~/erp-and-pos
 
-            # 2. Put application into quick maintenance mode
-            php artisan down --render="errors::503" || true
+            # 3. Put application into quick maintenance mode
+            php artisan down || true
 
-            # 3. Pull latest code from GitHub main branch
+            # 4. Pull latest code from GitHub main branch
             git fetch origin main
             git reset --hard origin/main
 
-            # 4. Install production dependencies
-            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+            # 5. Install production dependencies
+            $COMPOSER_CMD install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-            # 5. Run database migrations safely
+            # 6. Run database migrations safely
             php artisan migrate --force
 
-            # 6. Optimize and cache for high production performance
+            # 7. Optimize and cache for high production performance
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
@@ -88,5 +98,5 @@ jobs:
             php artisan filament:cache-components
             php artisan storage:link || true
 
-            # 7. Bring application back online
+            # 8. Bring application back online
             php artisan up
