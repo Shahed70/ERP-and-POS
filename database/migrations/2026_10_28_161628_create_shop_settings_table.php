@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('proprietor_name')->nullable()->default('প্রোপ্রাইটর');
             $table->string('phone')->nullable()->default('০১৭১১-০০০০০০');
             $table->string('email')->nullable()->default('contact@fishfeed.com');
-            $table->text('address')->nullable()->default('ফিড মার্কেট, ত্রিশাল, ময়মনসিংহ');
+            $table->text('address')->nullable();
             $table->string('logo_path')->nullable();
             $table->string('currency_symbol')->default('৳');
-            $table->text('invoice_footer_note')->nullable()->default('আমাদের সাথে ব্যবসা করার জন্য ধন্যবাদ। পণ্য বুঝিয়া পাইলাম।');
+            $table->text('invoice_footer_note')->nullable();
             $table->timestamps();
         });
 
